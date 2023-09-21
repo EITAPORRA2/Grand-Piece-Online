@@ -624,18 +624,7 @@ pcall(function()
         )
     
     end
-    spawn(function() 
-        while wait() do 
-            if plr.Character:FindFirstChild("Humanoid") then 
-                if plr.Character.Humanoid.Sit then 
-                    StopFloat=true
-                    wait(.1)
-                    plr.Character.Humanoid.Sit=false
-                    StopFloat=false
-                end
-            end
-        end
-    end)
+
     function y0(vc) 
         return Vector3.new(vc.X,0,vc.Z)
     end
@@ -987,23 +976,17 @@ pcall(function()
     end)
     
     local Tab2 = Window:CreatePage("Farm")
-    
-    local Section2 = Tab2:CreateSection("Main Farm")
-    
+    local Section2 = Tab2:CreateSection("Main Farm First Sea")
     local executor = identifyexecutor()
-    
     if (executor == "Synapse X" or executor == "Krnl") and secure_call then
     else
-        UniverseHub:AddNoti("Warning", "Your Exploit Is Not Supported, Our Script's might not working perfectly (Supported Exploit: KRNL,Synapse X)", 1)
+        UniverseHub:AddNoti("Warning", "Your Exploit Is Not Supported, Our Script's might not working perfectly (Supported Exploit: KRNL,Synapse X)", 5)
     end
     local lf = Section2:CreateToggle("Level Farm", {Toggled=Settings.Farm,Description = "Will farm at Fishman Island (best way)"}, function(state)
         Settings.Farm = state
         SetEN("Noclip", "Farm", state)
         SetEN("NoFallDame","Farm",state)
     end)
-
-    
-
     
     local function Farm()
         local player = game.Players.LocalPlayer
@@ -1048,7 +1031,7 @@ end
            task.wait()
         end
     end)
-    
+
     local function Farm1()
         getgenv().Speed = 100
         local finalDestination1 = CFrame.new(Vector3.new(7733, -2175, -17220))
@@ -1092,7 +1075,6 @@ end
                 end
             end
         end)
-
         while true do
             local player = game.Players.LocalPlayer
             local character = player.Character
@@ -1130,10 +1112,9 @@ end
             end   
 
             task.wait()
-        end
+    end
 end
-
-Section2:CreateToggle("Fishman Quest(Rifle)", {Description = "IN DEV"}, function(ToggleState)
+Section2:CreateToggle("Fishman Quest(Rifle)", {Description = "Faster Quest (Dev)"}, function(ToggleState)
     Farming1 = ToggleState
     while Farming1 do
         Farm1()
@@ -1141,25 +1122,20 @@ Section2:CreateToggle("Fishman Quest(Rifle)", {Description = "IN DEV"}, function
     end
 end)
 
-
-
     local olf = Section2:CreateToggle("1 Click Level Farm", {Toggled=Settings.OneClick,Description = "Will auto farm beli -> Buy weapons then start level farm"}, function(state)
         SetEN("Noclip", "OneClick", state)
         SetEN("NoFallDame","OneClick",state)
         Settings.OneClick = state
     end)
-    
     Section2:CreateToggle("Auto Buso Quest", {Toggled=Settings.AutoBusoQuest,Description = "Must enable with level farm"}, function(state)
         Settings.AutoBusoQuest=state
     end)
-    
     Section2:CreateDropdown("Level Farm Method", {
         List = {"Rifle","Sword","Black Leg"},
         Default = Settings.FarmMode
     }, function(item)
         Settings.FarmMode = item
     end)
-    
     function IsAdvanceMode(k) 
         if k=="1-500 at Fishman" then return false else return true end
     end
@@ -1169,7 +1145,6 @@ end)
     }, function(item)
         Settings.FarmPath = item
     end)
-    
     local Section2 = Tab2:CreateSection("Misc Farm")
     
     local AFB= Section2:CreateToggle("Auto Farm Beli (For Begginer Only)", {Toggled=Settings.Chest,Description = "Auto Farm Chest"}, function(state)
@@ -1177,7 +1152,6 @@ end)
         SetEN("Noclip", "Chest", state)
         SetEN("NoFallDame","Chest",state)
     end)
-    
     spawn(function() 
         while wait() do 
             local mode
@@ -1192,7 +1166,6 @@ end)
                  BuyItem=BuyKatana 
                  Pos = SwordPos 
             end
-    
             if Settings.FarmMode=="Rifle" then
                 mode="Rifle" 
                 price=300 
@@ -1201,8 +1174,7 @@ end)
                     fireclickdetector(game:GetService("Workspace").BuyableItems.Rifle.ShopPart.ClickDetector) 
                 end 
                 Pos = CFrame.new(999.6433715820312, 9.092554092407227, 1133.33740234375) 
-            end
-           
+            end          
             if Settings.OneClick and mode then 
                 lf.SetValue(false)
                 if not GetItem() and not CheckInven(mode) then
@@ -1236,7 +1208,6 @@ end)
             end
         end
     end)
-    
     local DoneSeq="0 1 1 1 0 1 1 1 1 0 "
     function IsSkillUnlocked(skill)
         if plr.PlayerGui:FindFirstChild("Keys") then
@@ -1250,8 +1221,6 @@ end)
         end
         return false
     end
-    
-    
     function IsSkillReady(skill)
         if plr.PlayerGui:FindFirstChild("Keys") then
             if plr.PlayerGui.Keys:FindFirstChild("Frame") then
@@ -1287,12 +1256,10 @@ end)
     -- Section2:CreateToggle("Ignore Galleons", {Description = false}, function(state)
     --     Settings.IgnoreGalleon = state
     -- end)
-    
     Section2:CreateButton("Set Ship Spawn Location", function(args)
         Settings.ShipPos=game.Players.LocalPlayer.Character.HumanoidRootPart.Position--Vector3.new(6013.2841796875, -3.5988941192626953, -18909.974609375)--
         UniverseHub:AddNoti("Notification", "Set Ship Farm Position Complete", 5)
     end)
-    
     function TpE(e,f)
         if e:FindFirstChild("HumanoidRootPart") then 
             repeat wait() 
@@ -1303,8 +1270,7 @@ end)
             end)
             until not e:FindFirstChild("HumanoidRootPart") or not pcall(function() return game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame end) or (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-e.HumanoidRootPart.Position).magnitude<5 or not e.Parent or not f()
         end
-    end
-    
+    end 
     local function KillCaMap()
         for i, v in ipairs(game.workspace.NPCs:GetChildren()) do
             if plr.Character:FindFirstChild("HumanoidRootPart") and v.Name == "Shark" and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health ~= 0 then
@@ -1315,7 +1281,6 @@ end)
             end
         end
     end
-    
     function EquipWpShip() 
         if StoringDF then return end
         if Settings.ShipFarmMode == "Black Leg" then
@@ -1334,7 +1299,6 @@ end)
             end
         end
     end
-    
     function GetAllMobInShip(ship) 
         local Mobs = {}
         for k,v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do 
@@ -1348,8 +1312,6 @@ end)
         end
         return Mobs
     end
-    
-    
     function Kill(v,f) 
         local tween=true
         repeat
@@ -1384,7 +1346,6 @@ end)
         MucTieu.MucTieu =nil
         tween=false
     end
-    
     plr.Backpack.ChildAdded:Connect(function(fruit) 
         if fruit:FindFirstChild("FruitModel") then
             spawn(function() 
@@ -1395,7 +1356,6 @@ end)
                         local v = fruit
                         StoringDF=true
                         local t = tick()
-                        
                         repeat wait(1)
                             plr.Character.Humanoid:EquipTool(v)
                             wait(.5)
@@ -1578,9 +1538,7 @@ end)
     end)
     
     local Tab2 = Window:CreatePage("Auto Stats")
-    
     local Section2 = Tab2:CreateSection("Main")
-    
     for k, v in pairs(Settings.AutoStat) do
         Section2:CreateToggle(k, {Description = false,Toggled=v}, function(state)
             Settings.AutoStat[k] = state
@@ -1599,6 +1557,8 @@ end)
             end
         end
     )
+local placeId = game.PlaceId
+if placeId == 3978370137 then
     LocationsCoord = {
         ["Town of Beginnings"] = CFrame.new(965.146, 10, 1195.127),
         ["Marine Fort F-1"] = CFrame.new(2904.113, 25, -994.2),
@@ -1623,6 +1583,20 @@ end)
         ["Reverse Mountain"] = CFrame.new(-14338, 20, -9446),
         ["Shrine"] = CFrame.new(-12184.12890625, 3.2737002372742, -18545.69921875)
     }
+elseif placeId == 7465136166 then
+    LocationsCoord = {
+        ["Thriller Bark"] = CFrame.new(9338, 15, -7040),
+        ["Colosseum of Arc"] = CFrame.new(2219.00098, 4.75781488, 6058.27246),
+        ["Desert Kingdom"] = CFrame.new(-3673.99585, 19.3691502, 405.525574),
+        ["Rovo Island"] = CFrame.new(-6247.56934, 102.015671, 359.281433),
+        ["Dokkan Island"] = CFrame.new(9303.5615234375, 30.17473030090332, -11833.7001953125),
+        ["Foro Island"] = CFrame.new(8271.4404296875, -3.2496461868286133, 4333.2412109375),
+        ["Reverse Mountain"] = CFrame.new(-9044.43359375, 113.1083984375, 434.6337890625),
+        ["Rose Kingdom"] = CFrame.new(8262.8994140625, 230.00009155273438, 10191.80078125),
+        ["Sashi Island"] = CFrame.new(-1553.2940673828125, 8.53828239440918, -6160.43896484375),
+        ["Spirit Island"] = CFrame.new(-1389.3193359375, -152.4592742919922, 9937.9609375)
+    }
+end
     function WTS(part, toggle)
         local screen = workspace.CurrentCamera:WorldToViewportPoint(part)
         return Vector2.new(screen.x, screen.y)
@@ -1644,7 +1618,6 @@ end)
         name.Outline = false
         name.Center = true
         name.Visible = true
-    
         table.insert(
             esplist,
             function()
@@ -1673,8 +1646,7 @@ end)
     end
     
     local Tab2 = Window:CreatePage("Misc")
-
-    local Section2 = Tab2:CreateSection("Teleport")
+    local Section2 = Tab2:CreateSection("Teleports First Sea")
     Section2:CreateDropdown("Teleport", {
         List = rac,
         Default = ""
