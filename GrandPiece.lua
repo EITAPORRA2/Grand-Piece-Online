@@ -1,4 +1,5 @@
 pcall(function()
+
 repeat wait() until game.Players.LocalPlayer
 if not getgenv().tvk then getgenv().tvk={} end
 for k,v in pairs(getgenv().tvk) do v.On=false end
@@ -1264,7 +1265,7 @@ plr.Backpack.ChildAdded:Connect(function(fruit)
                             }
                         },
                         ["footer"] = {
-                            ["icon_url"] = "https://cdn.discordapp.com/attachments/880433061307772958/994650337485000804/dc6e727bd4a71a981a037834b8c8fe38.png",
+                            ["icon_url"] = "",
                             ["text"] = "UniverseHub (" .. os.date("%X") .. ")"
                         }
                     }}
@@ -2545,4 +2546,4 @@ while wait() do
     end
 end
 
-end)				
+	end)
