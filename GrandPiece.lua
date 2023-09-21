@@ -6,7 +6,7 @@ local plr = game.Players.LocalPlayer
 local queue_on_teleport = queue_on_teleport
 if syn then queue_on_teleport = syn.queue_on_teleport end
 queue_on_teleport([[
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/CFA-HUB/CFAHub-Free/main/cfahubfree.lua"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/Grand-Piece-Online/main/GrandPiece.lua"))()
 ]])
 local NguyHiem=false
 local Settings = {
@@ -841,7 +841,7 @@ end
 
 
 local UniverseHub = 
-loadstring(game:HttpGet("https://pastebin.com/raw/yUcF6dcJ"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/Grand-Piece-Online/main/GPOLib.lua"))()
 
 local Window = UniverseHub:CreateWindow("<font color=\"#4FC3F7\">UNIVERSE HUB</font>", "Grand Piece Online", true)
 
