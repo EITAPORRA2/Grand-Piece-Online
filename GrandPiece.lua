@@ -84,7 +84,7 @@ pcall(function()
     local tvkdumb = {On=true}
     function tvkdumb:cac(self) 
         spawn(function() 
-            while wait(0.3) and self.On do SaveSettings() end
+            while wait(1) and self.On do SaveSettings() end
             print("Stoped")
             end)
     end
@@ -93,7 +93,7 @@ pcall(function()
     Settings = SaveToTable(ReadSetting())
     repeat wait() until game:IsLoaded()
     
-    repeat wait(.3)
+    repeat wait(.25)
     until plr:FindFirstChild("Loaded")
     and plr.Loaded.Value == true
     and plr.Character
@@ -113,7 +113,7 @@ pcall(function()
         repeat wait() until game:GetService("ReplicatedStorage").Events:FindFirstChild("reserved")
         if Settings.PSCode and Settings.PSCode~="" then 
             local clicked = false
-            while wait(1) do 
+            while wait(2) do 
                 game:GetService("ReplicatedStorage").Events.reserved:InvokeServer(Settings.PSCode)
                 pcall(function() 
                     FireButton(game:GetService("Players").LocalPlayer.PlayerGui.chooseType.Frame.regular)
@@ -121,7 +121,7 @@ pcall(function()
                 end)
             end
         else
-            while wait(1) do 
+            while wait(2) do 
                 game:GetService("ReplicatedStorage").Events.playgame:FireServer()
             end
         end
@@ -141,7 +141,7 @@ pcall(function()
     game:GetService("Players").LocalPlayer.Idled:connect(
         function()
             vu:Button2Down(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
-            task.wait()
+            wait(1)
             vu:Button2Up(Vector2.new(0, 0), workspace.CurrentCamera.CFrame)
         end
     )
@@ -525,7 +525,7 @@ pcall(function()
                     else
                         if CheckEN("Noclip") then
                             local function NoclipFunction()
-                                task.wait()
+                                wait()
                                 for i, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
                                     if v:IsA("BasePart") and v.CanCollide == true then
                                         v.CanCollide = false
@@ -658,7 +658,7 @@ pcall(function()
                 tpT(FishUp,nil,nil,dieukien,DisableBypass,Float)
                 DisableSafeMode=true
                 FireTouch(game:GetService("Workspace").Fishman.Part2)
-                task.wait()
+                wait(1)
                 if not IsFishMan(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position) then
                     DisableSafeMode=false
                     return tpT(Pos,nil,nil,dieukien,DisableBypass,Float)
@@ -672,7 +672,7 @@ pcall(function()
                 DisableSafeMode=true
                 FireTouch(game:GetService("Workspace").Fishman.Part)
         
-                task.wait()
+                wait(1)
                 SetEN("Drown","Tween",true)
                 if IsFishMan(game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart").Position) then
                     DisableSafeMode=false
@@ -895,7 +895,7 @@ pcall(function()
             return true
         end)
         if IsChestAlive(chest) then 
-            wait(0.4)
+            wait(1)
             for i, v in ipairs(game.workspace.Env:GetChildren()) do 
                 if v:FindFirstChild("ClickDetector") then 
                     if (v.Position - plr.Character.HumanoidRootPart.Position).magnitude <10 then 
@@ -1702,7 +1702,7 @@ end)
         
     end)
     game.CoreGui.DescendantAdded:Connect(function()
-        wait()
+        wait(2)
         pcall(function()
             if game.CoreGui.RobloxPromptGui.promptOverlay:FindFirstChild("ErrorPrompt")
             and Settings.AutoRejoin then
@@ -2208,7 +2208,7 @@ end)
         -- --pcall(Reload)
         -- game:GetService("VirtualInputManager"):SendKeyEvent(true, "R", false, game)
         -- game:GetService("VirtualInputManager"):SendKeyEvent(false, "R", false, game)
-        task.wait()
+        wait(0.3)
         shooting = false
     end
     
@@ -2719,7 +2719,7 @@ end)
                         (questdata.LevelRequest and data.Stats.Level.Value >= questdata.LevelRequest)
                  then
                     Tp(questdata.Questpos)
-                    task.wait()
+                    wait(1)
                     GetQuest(questdata.Quest, true)
                 end
                 olddd = questdata
@@ -2742,7 +2742,7 @@ end)
                         Tp(pos)
                         local tkk = tick()
                         repeat
-                            task.wait()
+                            wait()
                             Tp(pos)
                             if
                                 Settings.FarmMode == "Rifle" and
