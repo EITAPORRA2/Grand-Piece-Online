@@ -974,49 +974,10 @@ spawn(function()
         if Settings.Chest then 
             local chest = GetNearestChest()
             if chest then 
-                CollectChest(chest)
-            else
-                if not game.Players.LocalPlayer.QuestCD.Value then 
-                    local cac = CFrame.new(1009.720458984375, 8.999988555908203, 1179.4952392578125)
-                    local old = plr.CameraMinZoomDistance
-                    local old2 = plr.CameraMaxZoomDistance
-    
-                    if GetCurrentQuest()~="Find Sarah's necklace" then 
-                        if GetCurrentQuest()~="None" then 
-                            game:GetService("ReplicatedStorage").Events.Quest:InvokeServer({"quit"})
-                        end
-                        Tp(cac)
-                        GetQuest("Sarah", true)
-                    end
-                    plr.CameraMinZoomDistance = 128
-                    game.Players.LocalPlayer.CameraMaxZoomDistance = 256
-                    game.Players.LocalPlayer.CameraMinZoomDistance = 256
-                    Tp(CFrame.new(982.9542846679688, 41.349090576171875, 1264.251708984375))
-                    local t = tick()
-                    repeat wait() 
-                        local cac = GetNeak()
-                        if cac then 
-                            local rac = cac.CFrame+Vector3.new(0,5,0)
-                            Tp(CFrame.new(rac.X,rac.Y,rac.Z))
-                            wait(1)
-                            if cac:FindFirstChild("ClickDetector") then 
-                                fireclickdetector(cac.ClickDetector,2)
-                            end
-                        else
-                            Tp(CFrame.new(982.9542846679688, 41.349090576171875, 1264.251708984375))
-                        end
-                    until GetCurrentQuest()=="None" or tick()-t>20 or data.Quest.QuestProgress.Value==1 or not Settings.Chest
-                    game.Players.LocalPlayer.CameraMaxZoomDistance = old2
-                    game.Players.LocalPlayer.CameraMinZoomDistance = old  
-                    Tp(cac)
-                    GetQuest("Sarah", true)  
-                else
-                    
-                end 
-            end
-            
-        end 
-    end
+                CollectChest(chest)              
+            end 
+        end
+    end 
 end)
 
 local Tab2 = Window:CreatePage("Farm")
@@ -1062,7 +1023,7 @@ Section2:CreateDropdown("Level Farm Path", {
     Settings.FarmPath = item
 end)
 local Section2 = Tab2:CreateSection("Misc Farm")
-local AFB= Section2:CreateToggle("Auto Farm Beli (For Begginer Only)", {Toggled=Settings.Chest,Description = "Auto Farm Chest then do Sarah quest"}, function(state)
+local AFB= Section2:CreateToggle("Auto Farm Beli (For Begginer Only)", {Toggled=Settings.Chest,Description = "Auto Farm Chest"}, function(state)
     Settings.Chest = state
     SetEN("Noclip", "Chest", state)
     SetEN("NoFallDame","Chest",state)
@@ -1515,8 +1476,8 @@ function ESP(part, text, color, toggle)
     name.Text = text
     name.Color = color
     name.Position = WTS(part)
-    name.Size = 20.0
-    name.Outline = true
+    name.Size = 25.0
+    name.Outline = false
     name.Center = true
     name.Visible = true
 
@@ -1540,7 +1501,7 @@ function ESP(part, text, color, toggle)
     )
 end
 for k, v in pairs(LocationsCoord) do
-    ESP(Vector3.new(v.X, v.Y, v.Z), k, Color3.fromRGB(255, 255, 255), "IslandE")
+    ESP(Vector3.new(v.X, v.Y, v.Z), k, Color3.fromRGB(255, 0, 0), "IslandE")
 end
 local rac = {}
 for k, v in pairs(LocationsCoord) do
@@ -1730,10 +1691,6 @@ Section2:CreateTextbox("PS Code", "(Leave if you want rejoin to normal server)",
     Settings.PSCode=args
 end,Settings.PSCode)
 local Section2 = Tab2:CreateSection("Local Player")
-Section2:CreateToggle("No Drown", {Toggled=Settings.Nodrown,Description = "Make you cant drown in water"}, function(state)
-    Settings.Nodrown = state
-    SetEN("Nodrown", "Setting", state)
-end)
 Section2:CreateToggle("No Fall Damage", {Toggled=Settings.NoFallDame,Description = "Make you get no damage when fall"}, function(state)
     Settings.NoFallDame = state
     SetEN("NoFallDame", "Setting", state)
@@ -1742,26 +1699,18 @@ Section2:CreateToggle("Dash No Stamina", {Toggled=Settings.DashNoStam,Descriptio
     Settings.DashNoStam = state
     SetEN("DashNoStam", "Setting", state)
 end)
--- Section2:CreateToggle("No Clip", {Description = "Make you get no damage when fall"}, function(state)
---     Settings.Noclip = state
---     SetEN("Noclip", "Setting", state)
--- end)
-local ws = 16
-Section2:CreateSlider("WalkSpeed Changer", {Min = 16, Max = 100, DefaultValue = 16}, function(value)
-   ws=value
+Section2:CreateToggle("No Clip", {Description = "Make you no clip!!!"}, function(state)
+     Settings.Noclip = state
+     SetEN("Noclip", "Setting", state)
 end)
 
-spawn(function() 
-    while wait(1) do 
-        pcall(function() 
-            game.Players.LocalPlayer.Character.Humanoid.WalkSpeed=ws
-        end)
-    end
-end)
+
 local Section2 = Tab2:CreateSection("ESP")
 Section2:CreateToggle("Island ESP", {Toggled=Settings.IslandE,Description = false}, function(state)
     Settings.IslandE=state
 end)
+
+
 local Tab2 = Window:CreatePage("Web Hook")
 local Section2 = Tab2:CreateSection("Main")
 
@@ -1777,7 +1726,7 @@ Section2:CreateToggle("DF Webhook", {Toggled=Settings.DFWebHook,Description = "W
 end)
 local Tab2 = Window:CreatePage("Settings")
 local Section2 = Tab2:CreateSection("Main")
-Section2:CreateSlider("Tween Speed", {Min = 50, Max = 120, DefaultValue = Settings.vt}, function(value)
+Section2:CreateSlider("Tween Speed", {Min = 10, Max = 100, DefaultValue = Settings.vt}, function(value)
     Settings.vt=value
 end)
 
