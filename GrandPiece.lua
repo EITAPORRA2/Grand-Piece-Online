@@ -1,14 +1,4 @@
 pcall(function()
-
-    function antiafk()
-        local bb = game:GetService("VirtualUser")
-            game:GetService("Players").LocalPlayer.Idled:Connect(function()
-                bb:CaptureController()
-                bb:ClickButton2(Vector2.new())
-            end)
-        end
-    antiafk()
-
     repeat wait() until game.Players.LocalPlayer
     if not getgenv().tvk then getgenv().tvk={} end
     for k,v in pairs(getgenv().tvk) do v.On=false end
@@ -61,19 +51,19 @@ pcall(function()
     
     function SaveSettings()
         local HttpService = game:GetService("HttpService")
-        if not isfolder("UNIVERSE HUB") then
-            makefolder("UNIVERSE HUB")
+        if not isfolder("Universe Hub") then
+            makefolder("Universe Hub")
         end
-        writefile("UNIVERSE HUB/" .. SaveFileName, HttpService:JSONEncode(TableToSave(Settings)))
+        writefile("Universe Hub/" .. SaveFileName, HttpService:JSONEncode(TableToSave(Settings)))
     end
     
     function ReadSetting() 
         local s,e = pcall(function() 
             local HttpService = game:GetService("HttpService")
-            if not isfolder("UNIVERSE HUB") then
-                makefolder("UNIVERSE HUB")
+            if not isfolder("Universe Hub") then
+                makefolder("Universe Hub")
             end
-            return HttpService:JSONDecode(readfile("UNIVERSE HUB/" .. SaveFileName))
+            return HttpService:JSONDecode(readfile("Universe Hub/" .. SaveFileName))
         end)
         if s then return e 
         else
@@ -256,9 +246,10 @@ pcall(function()
                     Island = "Gravito's Fort",
                     LevelReq = 160,
                     SwordY = 31.861898422241,
-                    BlackLegY = 35.39432144165,
+                    BlackLegY = 34.6,
                     CooldownY=7.6498141288757,
-                    RapidY=35.39432144165
+                    RapidY=35.39432144165,
+                    BlackLegPos = CFrame.new(2604.27148, 37.3680725, -15549.2383, 0.999779046, -3.19521938e-08, -0.0210261438, 3.2335997e-08, 1, 1.79135871e-08, 0.0210261438, -1.85895299e-08, 0.999779046)
                 },
             }
         },
@@ -437,7 +428,7 @@ pcall(function()
             SetVaoDau(GetVauDau()+1)
             if Settings.RifleKick then
                 if GetVaoDau()>480 then 
-                    plr:Kick("\n[UNIVERSE HUB]\nKicked 499th rifle shoot (Rifle Kick)")
+                    plr:Kick("\n[Universe Hub]\nKicked 499th rifle shoot (Rifle Kick)")
                 end
             end
         end
@@ -493,6 +484,11 @@ pcall(function()
     
     game:GetService("RunService").Stepped:Connect(
         function()
+            if StopFloat then 
+                if plr.Character.HumanoidRootPart:FindFirstChild(tvktrumskid) then
+                    plr.Character.HumanoidRootPart[tvktrumskid]:Destroy()
+                end
+            end
             if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and
             game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health > 0 and
             game.Players.LocalPlayer.Character.Parent == game.Workspace.PlayerCharacters and
@@ -524,18 +520,23 @@ pcall(function()
                         end
                     else
                         if CheckEN("Noclip") then
-                            local function NoclipFunction()
-                                wait()
-                                for i, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-                                    if v:IsA("BasePart") and v.CanCollide == true then
-                                        v.CanCollide = false
-                                    end
-                                end
-                        end
+                            if not StopFloat then 
+                                plr.Character.Humanoid:ChangeState(11)
+                            end
+                            for _, child in pairs(plr.Character:GetDescendants()) do
+                                if child:IsA("BasePart") and child.CanCollide == true then
+                                    child.CanCollide = false
                                 end
                             end
                         end
-                    end 
+                    end
+                else
+                    if plr.Character.HumanoidRootPart:FindFirstChild(tvktrumskid) then
+                        plr.Character.HumanoidRootPart[tvktrumskid]:Destroy()
+                    end
+                end
+            end
+            
             
             pcall(
                 function()
@@ -554,7 +555,7 @@ pcall(function()
         end
     )
     --local vt = 100
-    if not Settings.vt then Settings.vt=80 end
+    if not Settings.vt then Settings.vt=95 end
     function RayCast2(a, b, c)
         local ignored = {game.Players.LocalPlayer.Character, game:GetService("Workspace").Effects, part0}
     
@@ -624,7 +625,6 @@ pcall(function()
         )
     
     end
-
     function y0(vc) 
         return Vector3.new(vc.X,0,vc.Z)
     end
@@ -835,10 +835,12 @@ pcall(function()
     
     
     local UniverseHub = 
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/Grand-Piece-Online/main/GPOLib.lua"))()
-    
-    local Window = UniverseHub:CreateWindow("<font color=\"#4FC3F7\">UNIVERSE HUB</font>", "Grand Piece Online", true)
-    
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/Grand-Piece-Online/main/GPOLib.lua"))()
+    local txt="Grand Piece Online"
+    if identifyexecutor()=="Krnl" then 
+        txt="Grand Piece Online (KRNL)"
+    end
+    local Window = UniverseHub:CreateWindow("<font color=\"#4FC3F7\">Universe Hub</font>", txt, true)
     function GetSword()
         for k, v in pairs(plr.Character:GetChildren()) do
             if v:FindFirstChild("SwordEquip") then
@@ -913,6 +915,7 @@ pcall(function()
     end
     
     function GetQuest(quest, rac)
+        
         local t = tick()
         repeat
             wait()
@@ -940,6 +943,7 @@ pcall(function()
             until not game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT")
         end
     
+        --  game:GetService("ReplicatedStorage").Events.Quest:InvokeServer({"takequest",quest})
     end
     local function GetNeak()
         if game.workspace.Effects:FindFirstChild("Folder") then
@@ -950,7 +954,6 @@ pcall(function()
             end
         end
     end
-    
     function GetSword()
         for k, v in pairs(plr.Character:GetChildren()) do
             if v:FindFirstChild("SwordEquip") then
@@ -963,166 +966,37 @@ pcall(function()
             end
         end
     end
-    
     spawn(function() 
         while wait() do 
             if Settings.Chest then 
                 local chest = GetNearestChest()
                 if chest then 
-                    CollectChest(chest)              
-                end 
-            end
-        end 
+                    CollectChest(chest)  
+                end
+                
+            end 
+        end
     end)
     
     local Tab2 = Window:CreatePage("Farm")
-    local Section2 = Tab2:CreateSection("Main Farm First Sea")
+    local Section2 = Tab2:CreateSection("Main Farm")
+    
     local executor = identifyexecutor()
+    
     if (executor == "Synapse X" or executor == "Krnl") and secure_call then
     else
-        UniverseHub:AddNoti("Warning", "Your Exploit Is Not Supported, Our Script's might not working perfectly (Supported Exploit: KRNL,Synapse X)", 5)
+        UniverseHub:AddNoti("Warning", "Your Executor Is Not Supported, Our Script's might not working Fully", 5)
     end
-    local lf = Section2:CreateToggle("Level Farm", {Toggled=Settings.Farm,Description = "Will farm at Fishman Island (best way)"}, function(state)
+    local lf = Section2:CreateToggle("Level Farm", {Toggled=Settings.Farm,Description = "Will farm at Fishman Island (Fastest way)"}, function(state)
         Settings.Farm = state
         SetEN("Noclip", "Farm", state)
         SetEN("NoFallDame","Farm",state)
     end)
+    -- local lf = Section2:CreateToggle("Legit Farm", {Toggled=Settings.Legit,Description = "Legit Farm"}, function(state)
+    --     Settings.Legit = state
+    -- end)
     
-    local function Farm()
-        local player = game.Players.LocalPlayer
-        local character = player.Character
-        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-        local function getAngleBetweenPoints(pointA, pointB)
-            local direction = (pointB - pointA).unit
-            local angle = math.deg(math.atan2(direction.Z, direction.X))
-            return angle
-        end
-        local enemyHeadPosition = game:GetService("Workspace").NPCs["Fishman Karate User"].Head and game:GetService("Workspace").NPCs["Fishman Karate User"].Head.Position
-        if enemyHeadPosition then
-            local playerPosition = humanoidRootPart.Position
-            local angleBetweenPositions = getAngleBetweenPoints(playerPosition, enemyHeadPosition)
-            local adjustedAngles = CFrame.new(playerPosition, enemyHeadPosition).lookVector
-            local argsReload = {
-                [1] = "reload",
-                [2] = {
-                    ["Gun"] = "Rifle"
-                }
-            }
-            game:GetService("ReplicatedStorage").Events.CIcklcon.gunFunctions:InvokeServer(unpack(argsReload))
-            task.wait()
-            local argsFire = {
-                [1] = "fire",
-                [2] = {
-                    ["Start"] = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + adjustedAngles),
-                    ["Gun"] = "Rifle",
-                    ["joe"] = "true",
-                    ["Position"] = enemyHeadPosition,
-                    ["Angle"] = angleBetweenPositions,
-            }
-        }
-        game:GetService("ReplicatedStorage").Events.CIcklcon:FireServer(unpack(argsFire))
-    end   
-end
-
-    Section2:CreateToggle("Fishman No Quest(Rifle)", {Description = "Faster Rifle Shoots!"}, function(ToggleState)
-        Farming = ToggleState
-        while Farming do
-            Farm()
-           task.wait()
-        end
-    end)
-
-    local function Farm1()
-        getgenv().Speed = 100
-        local finalDestination1 = CFrame.new(Vector3.new(7733, -2175, -17220))
-        local tween1 = game:GetService("TweenService"):Create(
-            game.Players.LocalPlayer.Character.HumanoidRootPart,
-            TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-            {CFrame = finalDestination1}
-        )
-        tween1:Play()
-        tween1.Completed:Wait()
-
-        wait()
-
-            local ohTable1 = {
-                [1] = "takequest",
-                [2] = "Help becky"
-            }
-            game:GetService("ReplicatedStorage").Events.Quest:InvokeServer(ohTable1)
-
-        local finalDestination2 = CFrame.new(Vector3.new(7878, -2089, -17111))
-        local tween2 = game:GetService("TweenService"):Create(
-            game.Players.LocalPlayer.Character.HumanoidRootPart,
-            TweenInfo.new((finalDestination2.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-            {CFrame = finalDestination2}
-        )
-        tween2:Play()
-        tween2.Completed:Wait()
-
-        wait()
-
-        local npcCount = 0
-
-        game:GetService("LogService").MessageOut:Connect(function(message, messageType)
-            if messageType == Enum.MessageType.MessageOutput then
-                if message:find("peli change") then
-                    npcCount = npcCount + 1
-                    print("NPCs mortos:", npcCount)
-                    if npcCount >= 5 then
-                        npcCount = 0
-                    end
-                end
-            end
-        end)
-        while true do
-            local player = game.Players.LocalPlayer
-            local character = player.Character
-            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-            local function getAngleBetweenPoints(pointA, pointB)
-                local direction = (pointB - pointA).unit
-                local angle = math.deg(math.atan2(direction.Z, direction.X))
-                return angle
-            end
-            local enemyHeadPosition = game:GetService("Workspace").NPCs["Fishman Karate User"].Head and game:GetService("Workspace").NPCs["Fishman Karate User"].Head.Position
-
-            if enemyHeadPosition then
-                local playerPosition = humanoidRootPart.Position
-                local angleBetweenPositions = getAngleBetweenPoints(playerPosition, enemyHeadPosition)
-                local adjustedAngles = CFrame.new(playerPosition, enemyHeadPosition).lookVector
-                local argsReload = {
-                    [1] = "reload",
-                    [2] = {
-                        ["Gun"] = "Rifle"
-                    }
-                }
-                game:GetService("ReplicatedStorage").Events.CIcklcon.gunFunctions:InvokeServer(unpack(argsReload))
-                task.wait()
-                local argsFire = {
-                    [1] = "fire",
-                    [2] = {
-                        ["Start"] = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + adjustedAngles),
-                        ["Gun"] = "Rifle",
-                        ["joe"] = "true",
-                        ["Position"] = enemyHeadPosition,
-                        ["Angle"] = angleBetweenPositions,
-                    }
-                }
-                game:GetService("ReplicatedStorage").Events.CIcklcon:FireServer(unpack(argsFire))
-            end   
-
-            task.wait()
-    end
-end
-Section2:CreateToggle("Fishman Quest(Rifle)", {Description = "Faster Quest (Dev)"}, function(ToggleState)
-    Farming1 = ToggleState
-    while Farming1 do
-        Farm1()
-        task.wait() -- Substituí task.wait() por wait()
-    end
-end)
-
-    local olf = Section2:CreateToggle("1 Click Level Farm", {Toggled=Settings.OneClick,Description = "Will auto farm beli -> Buy weapons then start level farm"}, function(state)
+    local olf = Section2:CreateToggle("1 Click Auto Farm", {Toggled=Settings.OneClick,Description = "Will auto farm beli -> Buy weapons then start level farm"}, function(state)
         SetEN("Noclip", "OneClick", state)
         SetEN("NoFallDame","OneClick",state)
         Settings.OneClick = state
@@ -1131,7 +1005,7 @@ end)
         Settings.AutoBusoQuest=state
     end)
     Section2:CreateDropdown("Level Farm Method", {
-        List = {"Rifle","Sword","Black Leg"},
+        List = {"Sword","Black Leg"},
         Default = Settings.FarmMode
     }, function(item)
         Settings.FarmMode = item
@@ -1145,6 +1019,7 @@ end)
     }, function(item)
         Settings.FarmPath = item
     end)
+    
     local Section2 = Tab2:CreateSection("Misc Farm")
     
     local AFB= Section2:CreateToggle("Auto Farm Beli (For Begginer Only)", {Toggled=Settings.Chest,Description = "Auto Farm Chest"}, function(state)
@@ -1152,6 +1027,7 @@ end)
         SetEN("Noclip", "Chest", state)
         SetEN("NoFallDame","Chest",state)
     end)
+    
     spawn(function() 
         while wait() do 
             local mode
@@ -1174,7 +1050,8 @@ end)
                     fireclickdetector(game:GetService("Workspace").BuyableItems.Rifle.ShopPart.ClickDetector) 
                 end 
                 Pos = CFrame.new(999.6433715820312, 9.092554092407227, 1133.33740234375) 
-            end          
+            end
+           
             if Settings.OneClick and mode then 
                 lf.SetValue(false)
                 if not GetItem() and not CheckInven(mode) then
@@ -1235,21 +1112,18 @@ end)
         end
         return false
     end
-    
     local Section2 = Tab2:CreateSection("Ship Farm")
     Section2:CreateToggle("Ship Farm", {Toggled=Settings.ShipFarm,Description = false}, function(state)
         Settings.ShipFarm = state
         SetEN("Noclip", "ShipFarm", state)
         SetEN("NoFallDame","ShipFarm",state)
     end)
-    
     Section2:CreateDropdown("Ship Farm Method", {
         List = {"Sword","Black Leg"},
         Default =  Settings.ShipFarmMode
     }, function(item)
         Settings.ShipFarmMode = item
     end)
-    
     Section2:CreateToggle("Kill Cannoners", {Toggled=Settings.KillCannon,Description = false}, function(state)
         Settings.KillCannon = state
     end)
@@ -1270,7 +1144,7 @@ end)
             end)
             until not e:FindFirstChild("HumanoidRootPart") or not pcall(function() return game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame end) or (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-e.HumanoidRootPart.Position).magnitude<5 or not e.Parent or not f()
         end
-    end 
+    end
     local function KillCaMap()
         for i, v in ipairs(game.workspace.NPCs:GetChildren()) do
             if plr.Character:FindFirstChild("HumanoidRootPart") and v.Name == "Shark" and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health ~= 0 then
@@ -1312,6 +1186,7 @@ end)
         end
         return Mobs
     end
+    
     function Kill(v,f) 
         local tween=true
         repeat
@@ -1346,6 +1221,7 @@ end)
         MucTieu.MucTieu =nil
         tween=false
     end
+    
     plr.Backpack.ChildAdded:Connect(function(fruit) 
         if fruit:FindFirstChild("FruitModel") then
             spawn(function() 
@@ -1356,6 +1232,7 @@ end)
                         local v = fruit
                         StoringDF=true
                         local t = tick()
+                        
                         repeat wait(1)
                             plr.Character.Humanoid:EquipTool(v)
                             wait(.5)
@@ -1375,7 +1252,7 @@ end)
                         ["content"] = (Settings.MentionEveryone and "@everyone") or "",
                         ["embeds"] = {{
                             ["title"] = "Grand Piece Online",
-                            ["description"] = "Fruit Drop!",
+                            ["description"] = "Fruit Gotten",
                             ["type"] = "rich",
                             ["color"] = tonumber(47103),
                             ["fields"] = {
@@ -1391,8 +1268,8 @@ end)
                                 }
                             },
                             ["footer"] = {
-                                ["icon_url"] = "",
-                                ["text"] = "UniverseHub (" .. os.date("%X") .. ")"
+                                ["icon_url"] = "https://media.discordapp.net/attachments/1115444244744781835/1154536363182542908/static.png?width=204&height=204",
+                                ["text"] = "Universe Hub (" .. os.date("%X") .. ")"
                             }
                         }}
                     }
@@ -1411,34 +1288,6 @@ end)
             end
         end
     end)
-    -- plr.PlayerGui.Notifications.Frame.ChildAdded:Connect(function(v)
-    --     wait(.5)
-    --     if Settings.AutoStoreDF then
-    --         for i, v in ipairs(v:GetDescendants()) do
-    --             if v:IsA("TextLabel")
-    --             and string.find(v.Name, "Group0")
-    --             and v.TextColor3 == Color3.fromRGB(255, 255, 255)
-    --             and v.Text == "DROP!" then
-    --                 local Fruit = BackpackFruit()
-    --                 if Fruit then
-    --                     if string.find(InventoryItems.Value, "Prestige Fruitbag")
-    --                     and GetItemValue(Fruit.Name) >= 2
-    --                     or not string.find(InventoryItems.Value, "Prestige Fruitbag")
-    --                     and GetItemValue(Fruit.Name) >= 1 then
-    --                         if getgenv().toggledfwebhook then
-    --                             ASDF(Fruit, true)
-    --                         end
-    --                         local Ignored = Instance.new("IntValue", Fruit)
-    --                         Ignored.Name = "Ignored"
-    --                     else
-    --                         ASDF(Fruit)
-    --                     end
-    --                 end
-    --                 return
-    --             end
-    --         end
-    --     end
-    -- end)
     
     function GetMob(name,stud) 
         for k,v in pairs(game.Workspace.NPCs:GetChildren()) do 
@@ -1536,9 +1385,264 @@ end)
             end
         end
     end)
+
+    local Tab2 = Window:CreatePage("Rifle Farm")
+    local Section2 = Tab2:CreateSection("Farm")
+
+    local function Farm()
+        pcall(function()
+        getgenv().Speed = 125
+        local finalDestination = CFrame.new(Vector3.new(7878, -2089, -17111))
+        local tween = game:GetService("TweenService"):Create(
+            game.Players.LocalPlayer.Character.HumanoidRootPart,
+            TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+            {CFrame = finalDestination}
+        )
+        tween:Play()
+        tween.Completed:Wait()
+
+        local player = game.Players.LocalPlayer
+        local character = player.Character
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+        local function getAngleBetweenPoints(pointA, pointB)
+            local direction = (pointB - pointA).unit
+            local angle = math.deg(math.atan2(direction.Z, direction.X))
+            return angle
+        end
+        local enemyHeadPosition = game:GetService("Workspace").NPCs["Fishman Karate User"].Head and game:GetService("Workspace").NPCs["Fishman Karate User"].Head.Position
+        if enemyHeadPosition then
+            local playerPosition = humanoidRootPart.Position
+            local angleBetweenPositions = getAngleBetweenPoints(playerPosition, enemyHeadPosition)
+            local adjustedAngles = CFrame.new(playerPosition, enemyHeadPosition).lookVector
+            local argsReload = {
+                [1] = "reload",
+                [2] = {
+                    ["Gun"] = "Rifle"
+                }
+            }
+            game:GetService("ReplicatedStorage").Events.CIcklcon.gunFunctions:InvokeServer(unpack(argsReload))
+            task.wait()
+            local argsFire = {
+                [1] = "fire",
+                [2] = {
+                    ["Start"] = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + adjustedAngles),
+                    ["Gun"] = "Rifle",
+                    ["joe"] = "true",
+                    ["Position"] = enemyHeadPosition,
+                    ["Angle"] = angleBetweenPositions,
+            }
+        }
+        game:GetService("ReplicatedStorage").Events.CIcklcon:FireServer(unpack(argsFire))
+    end   
+    end)
+    end
+    
+    local toggleActive = false
+    
+    Section2:CreateToggle("Fishman No Quest (Rifle)", {Description = "Faster Rifle Shoots!"}, function(active)
+    pcall(function()
+    toggleActive = active
+    while toggleActive do
+        Farm()
+        task.wait()
+    end
+    end)
+    end)
+
+local function Farm1()
+        pcall(function()
+        getgenv().Speed = 125
+        local finalDestination1 = CFrame.new(Vector3.new(7733, -2175, -17220))
+        local tween1 = game:GetService("TweenService"):Create(
+            game.Players.LocalPlayer.Character.HumanoidRootPart,
+            TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+            {CFrame = finalDestination1}
+        )
+        tween1:Play()
+        tween1.Completed:Wait()
+    
+        wait()
+
+local ohTable1 = {
+ [1] = "takequest",
+[2] = "Help becky"
+ }
+game:GetService("ReplicatedStorage").Events.Quest:InvokeServer(ohTable1)
+    
+        local finalDestination2 = CFrame.new(Vector3.new(7878, -2089, -17111))
+        local tween2 = game:GetService("TweenService"):Create(
+            game.Players.LocalPlayer.Character.HumanoidRootPart,
+            TweenInfo.new((finalDestination2.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+            {CFrame = finalDestination2}
+        )
+        tween2:Play()
+        tween2.Completed:Wait()
+    
+        wait()
+    
+        local npcCount = 0
+    
+        game:GetService("LogService").MessageOut:Connect(function(message, messageType)
+            if messageType == Enum.MessageType.MessageOutput then
+                if message:find("peli change") then
+                    npcCount = npcCount + 1
+                    print("NPCs mortos:", npcCount)
+                    if npcCount >= 5 then
+                        npcCount = 0
+                    end
+                end
+            end
+        end)
+        while true do
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+            local function getAngleBetweenPoints(pointA, pointB)
+                local direction = (pointB - pointA).unit
+                local angle = math.deg(math.atan2(direction.Z, direction.X))
+                return angle
+            end
+            local enemyHeadPosition = game:GetService("Workspace").NPCs["Fishman Karate User"].Head and game:GetService("Workspace").NPCs["Fishman Karate User"].Head.Position
+    
+            if enemyHeadPosition then
+                local playerPosition = humanoidRootPart.Position
+                local angleBetweenPositions = getAngleBetweenPoints(playerPosition, enemyHeadPosition)
+                local adjustedAngles = CFrame.new(playerPosition, enemyHeadPosition).lookVector
+                local argsReload = {
+                    [1] = "reload",
+                    [2] = {
+                        ["Gun"] = "Rifle"
+                    }
+                }
+                game:GetService("ReplicatedStorage").Events.CIcklcon.gunFunctions:InvokeServer(unpack(argsReload))
+                task.wait()
+                local argsFire = {
+                    [1] = "fire",
+                    [2] = {
+                        ["Start"] = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + adjustedAngles),
+                        ["Gun"] = "Rifle",
+                        ["joe"] = "true",
+                        ["Position"] = enemyHeadPosition,
+                        ["Angle"] = angleBetweenPositions,
+                    }
+                }
+                game:GetService("ReplicatedStorage").Events.CIcklcon:FireServer(unpack(argsFire))
+            end   
+    
+            task.wait()
+    end
+    end)
+    end
+
+    Section2:CreateToggle("Fishman Quest (Rifle)", {Description = "Faster Quest (Dev)"}, function(ToggleState)
+    pcall(function()
+    Farming1 = ToggleState
+    while Farming1 do
+        Farm1()
+        task.wait()
+    end
+    end)
+    end)
+
+    local function AutoBuso()
+        pcall(function()
+        getgenv().Speed = 125
+        local finalDestination3 = CFrame.new(Vector3.new(-6566.13427734375, 169.4822998046875, 1994.3565673828125))
+        local tween1 = game:GetService("TweenService"):Create(
+            game.Players.LocalPlayer.Character.HumanoidRootPart,
+            TweenInfo.new((finalDestination3.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+            {CFrame = finalDestination3}
+        )
+        tween1:Play()
+        tween1.Completed:Wait()
+    
+        wait(1)
+
+        local ohTable1 = {
+            [1] = "takequest",
+            [2] = "Road to Armament"
+        }
+        
+        game:GetService("ReplicatedStorage").Events.Quest:InvokeServer(ohTable1)        
+    
+        local finalDestination4 = CFrame.new(Vector3.new(-6785.39502, 84.7380066, 2029.31055))
+        local tween2 = game:GetService("TweenService"):Create(
+            game.Players.LocalPlayer.Character.HumanoidRootPart,
+            TweenInfo.new((finalDestination4.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+            {CFrame = finalDestination4}
+        )
+        tween2:Play()
+        tween2.Completed:Wait()
+    
+        wait(0.5)
+    
+        local npcCount = 0
+    
+        game:GetService("LogService").MessageOut:Connect(function(message, messageType)
+            if messageType == Enum.MessageType.MessageOutput then
+                if message:find("peli change") then
+                    npcCount = npcCount + 1
+                    print("NPCs mortos:", npcCount)
+                    if npcCount >= 50 then
+                        npcCount = 0
+                    end
+                end
+            end
+        end)
+        while true do
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+            local function getAngleBetweenPoints(pointA, pointB)
+                local direction = (pointB - pointA).unit
+                local angle = math.deg(math.atan2(direction.Z, direction.X))
+                return angle
+            end
+            local enemyHeadPosition = game:GetService("Workspace").NPCs.Yeti.Head and game:GetService("Workspace").NPCs.Yeti.Head.Position
+    
+            if enemyHeadPosition then
+                local playerPosition = humanoidRootPart.Position
+                local angleBetweenPositions = getAngleBetweenPoints(playerPosition, enemyHeadPosition)
+                local adjustedAngles = CFrame.new(playerPosition, enemyHeadPosition).lookVector
+                local argsReload = {
+                    [1] = "reload",
+                    [2] = {
+                        ["Gun"] = "Rifle"
+                    }
+                }
+                game:GetService("ReplicatedStorage").Events.CIcklcon.gunFunctions:InvokeServer(unpack(argsReload))
+                task.wait()
+                local argsFire = {
+                    [1] = "fire",
+                    [2] = {
+                        ["Start"] = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + adjustedAngles),
+                        ["Gun"] = "Rifle",
+                        ["joe"] = "true",
+                        ["Position"] = enemyHeadPosition,
+                        ["Angle"] = angleBetweenPositions,
+                    }
+                }
+                game:GetService("ReplicatedStorage").Events.CIcklcon:FireServer(unpack(argsFire))
+            end   
+    
+            task.wait(0.1)
+    end
+    end)
+    end
+
+Section2:CreateToggle("Auto Buso Quest (Rifle)", {Description = "MandumJeb"}, function(ToggleState)
+pcall(function()
+ AutoBusoHaki = ToggleState
+  while AutoBusoHaki do
+     AutoBuso()
+ task.wait()
+end
+end)
+end)
     
     local Tab2 = Window:CreatePage("Auto Stats")
     local Section2 = Tab2:CreateSection("Main")
+    
     for k, v in pairs(Settings.AutoStat) do
         Section2:CreateToggle(k, {Description = false,Toggled=v}, function(state)
             Settings.AutoStat[k] = state
@@ -1557,46 +1661,46 @@ end)
             end
         end
     )
-local placeId = game.PlaceId
-if placeId == 3978370137 then
-    LocationsCoord = {
-        ["Town of Beginnings"] = CFrame.new(965.146, 10, 1195.127),
-        ["Marine Fort F-1"] = CFrame.new(2904.113, 25, -994.2),
-        ["Sandora"] = CFrame.new(-1316.089, 15, 1129.95),
-        ["Shell's Town"] = CFrame.new(-605.248, 15, -4430.41),
-        ["Zou"] = CFrame.new(-4458.681, 10, -2502.741),
-        ["Restaurant Baratie"] = CFrame.new(-3909.713, 55, -5569.912),
-        ["Orange Town"] = CFrame.new(-6999.987, 10, -5345.705),
-        ["Mysterious Cliff"] = CFrame.new(2180.005, 415, -8628.285),
-        ["Roca Island"] = CFrame.new(5426.218, 20, -4918.854),
-        ["Colosseum"] = CFrame.new(-2019.975, 10, -7661.091),
-        ["Sphinx Island"] = CFrame.new(-6327.812, 45, -10129.278),
-        ["Kori Island"] = CFrame.new(-6684.44, 10, 1828.623),
-        ["Arlong Park"] = CFrame.new(652.855, 15, -13122.346),
-        ["Land of the Sky"] = CFrame.new(9016.793, 1440, -10542.829),
-        ["Knock-Up Stream Rock"] = CFrame.new(8116, 10, -9819),
-        ["Gravito's Fort"] = CFrame.new(2611.159, 15, -15359.032),
-        ["Fishman Cave"] = CFrame.new(5682.19, 5, -16458.479),
-        ["Fishman Island"] = CFrame.new(8003.553, -2150, -17056.971),
-        ["Marine Base G-1"] = CFrame.new(-9955.175, 70, -14910.613),
-        ["Coco Island"] = CFrame.new(-4262.249, 10, -15531.864),
-        ["Reverse Mountain"] = CFrame.new(-14338, 20, -9446),
-        ["Shrine"] = CFrame.new(-12184.12890625, 3.2737002372742, -18545.69921875)
-    }
-elseif placeId == 7465136166 then
-    LocationsCoord = {
-        ["Thriller Bark"] = CFrame.new(9338, 15, -7040),
-        ["Colosseum of Arc"] = CFrame.new(2219.00098, 4.75781488, 6058.27246),
-        ["Desert Kingdom"] = CFrame.new(-3673.99585, 19.3691502, 405.525574),
-        ["Rovo Island"] = CFrame.new(-6247.56934, 102.015671, 359.281433),
-        ["Dokkan Island"] = CFrame.new(9303.5615234375, 30.17473030090332, -11833.7001953125),
-        ["Foro Island"] = CFrame.new(8271.4404296875, -3.2496461868286133, 4333.2412109375),
-        ["Reverse Mountain"] = CFrame.new(-9044.43359375, 113.1083984375, 434.6337890625),
-        ["Rose Kingdom"] = CFrame.new(8262.8994140625, 230.00009155273438, 10191.80078125),
-        ["Sashi Island"] = CFrame.new(-1553.2940673828125, 8.53828239440918, -6160.43896484375),
-        ["Spirit Island"] = CFrame.new(-1389.3193359375, -152.4592742919922, 9937.9609375)
-    }
-end
+    local placeId = game.PlaceId
+    if placeId == 3978370137 then
+        LocationsCoord = {
+            ["Town of Beginnings"] = CFrame.new(965.146, 10, 1195.127),
+            ["Marine Fort F-1"] = CFrame.new(2904.113, 25, -994.2),
+            ["Sandora"] = CFrame.new(-1316.089, 15, 1129.95),
+            ["Shell's Town"] = CFrame.new(-605.248, 15, -4430.41),
+            ["Zou"] = CFrame.new(-4458.681, 10, -2502.741),
+            ["Restaurant Baratie"] = CFrame.new(-3909.713, 55, -5569.912),
+            ["Orange Town"] = CFrame.new(-6999.987, 10, -5345.705),
+            ["Mysterious Cliff"] = CFrame.new(2180.005, 415, -8628.285),
+            ["Roca Island"] = CFrame.new(5426.218, 20, -4918.854),
+            ["Colosseum"] = CFrame.new(-2019.975, 10, -7661.091),
+            ["Sphinx Island"] = CFrame.new(-6327.812, 45, -10129.278),
+            ["Kori Island"] = CFrame.new(-6684.44, 10, 1828.623),
+            ["Arlong Park"] = CFrame.new(652.855, 15, -13122.346),
+            ["Land of the Sky"] = CFrame.new(9016.793, 1440, -10542.829),
+            ["Knock-Up Stream Rock"] = CFrame.new(8116, 10, -9819),
+            ["Gravito's Fort"] = CFrame.new(2611.159, 15, -15359.032),
+            ["Fishman Cave"] = CFrame.new(5682.19, 5, -16458.479),
+            ["Fishman Island"] = CFrame.new(8003.553, -2150, -17056.971),
+            ["Marine Base G-1"] = CFrame.new(-9955.175, 70, -14910.613),
+            ["Coco Island"] = CFrame.new(-4262.249, 10, -15531.864),
+            ["Reverse Mountain"] = CFrame.new(-14338, 20, -9446),
+            ["Shrine"] = CFrame.new(-12184.12890625, 3.2737002372742, -18545.69921875)
+        }
+    elseif placeId == 7465136166 then
+        LocationsCoord = {
+            ["Thriller Bark"] = CFrame.new(9338, 15, -7040),
+            ["Colosseum of Arc"] = CFrame.new(2219.00098, 4.75781488, 6058.27246),
+            ["Desert Kingdom"] = CFrame.new(-3673.99585, 19.3691502, 405.525574),
+            ["Rovo Island"] = CFrame.new(-6247.56934, 102.015671, 359.281433),
+            ["Dokkan Island"] = CFrame.new(9303.5615234375, 30.17473030090332, -11833.7001953125),
+            ["Foro Island"] = CFrame.new(8271.4404296875, -3.2496461868286133, 4333.2412109375),
+            ["Reverse Mountain"] = CFrame.new(-9044.43359375, 113.1083984375, 434.6337890625),
+            ["Rose Kingdom"] = CFrame.new(8262.8994140625, 230.00009155273438, 10191.80078125),
+            ["Sashi Island"] = CFrame.new(-1553.2940673828125, 8.53828239440918, -6160.43896484375),
+            ["Spirit Island"] = CFrame.new(-1389.3193359375, -152.4592742919922, 9937.9609375)
+        }
+    end
     function WTS(part, toggle)
         local screen = workspace.CurrentCamera:WorldToViewportPoint(part)
         return Vector2.new(screen.x, screen.y)
@@ -1644,52 +1748,13 @@ end
     for k, v in pairs(LocationsCoord) do
         table.insert(rac, k)
     end
-    
     local Tab2 = Window:CreatePage("Misc")
-    local Section2 = Tab2:CreateSection("Teleports First Sea")
-    Section2:CreateDropdown("Teleport", {
-        List = rac,
-        Default = ""
-    }, function(item)
-        if item and item~="" then 
-            local s,e = xpcall(function()Tp(LocationsCoord[item]) end,function(e) 
-                print(e)
-                print(debug.traceback())
-            end)
-        end
-    end)
     
-Section2:CreateButton("Instant Teleport Fishman Island", function()
-    local player = game.Players.LocalPlayer
-    player.Character.HumanoidRootPart.CFrame = CFrame.new(5639.86865, -92.762001, -16611.4688)
-end)
-
-Section2:CreateButton("Teleport Farm Place (Fishman Island)", function()
-    getgenv().Speed = 100
-    local finalDestination = CFrame.new(Vector3.new(7878, -2089, -17111))
-    game:GetService("TweenService"):Create(
-        game.Players.LocalPlayer.Character.HumanoidRootPart,
-        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-        {CFrame = finalDestination}
-    ):Play()
-end)
-
-Section2:CreateButton("Teleport World Scroll", function()
-    getgenv().Speed = 100
-    local finalDestination = CFrame.new(Vector3.new(-12188, 10, -18545))
-    game:GetService("TweenService"):Create(
-        game.Players.LocalPlayer.Character.HumanoidRootPart,
-        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-        {CFrame = finalDestination}
-    ):Play()
-end)
-
-
     local Section2 = Tab2:CreateSection("Stuff")
-    Section2:CreateToggle("Auto Store DF", {Toggled=Settings.AutoStoreDF,Description = false}, function(state)
+
+    Section2:CreateToggle("Auto Store Devil Fruit", {Toggled=Settings.AutoStoreDF,Description = false}, function(state)
         Settings.AutoStoreDF = state
     end)
-    
     
     Section2:CreateToggle("Auto Buso Haki", {Toggled=Settings.AutoBuso,Description = false}, function(state)
         Settings.AutoBuso = state
@@ -1767,7 +1832,7 @@ end)
         return false
     end
     function SafeModeKick() 
-        plr:Kick("\n[UniverseHub]\nKicked for suspicious movements (Safe Mode)")
+        plr:Kick("\n[Universe Hub]\nKicked for suspicious movements (Safe Mode)")
     end
     spawn(function() 
         while wait() do 
@@ -1837,7 +1902,7 @@ end)
                         until tick() - CurrentTick >= Settings.AutoKickTimer * 60
                         or not Settings.AutoKick
                         if Settings.AutoKick then
-                            plr:Kick("\n[UniverseHub]\n".. Settings.AutoKickTimer .." minute reached (Auto Kick)")
+                            plr:Kick("\n[Universe Hub]\n".. Settings.AutoKickTimer .." minute reached (Auto Kick)")
                         end
                     end)
                 end 
@@ -1850,7 +1915,7 @@ end)
      Section2:CreateToggle("Auto Rejoin", {Toggled=Settings.AutoRejoin,Description = false}, function(state)
         Settings.AutoRejoin = state
     end)
-    Section2:CreateTextbox("PS Code", "(Leave if you want rejoin to normal server)", function(args)
+    Section2:CreateTextbox("Private Server Code", "(Leave if you want rejoin to normal server)", function(args)
         Settings.PSCode=args
     end,Settings.PSCode)
     local Section2 = Tab2:CreateSection("Local Player")
@@ -1862,7 +1927,7 @@ end)
         Settings.DashNoStam = state
         SetEN("DashNoStam", "Setting", state)
     end)
-
+    
     local function NoclipFunction()
         task.wait()
         for i, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
@@ -1870,9 +1935,9 @@ end)
                 v.CanCollide = false
             end
         end
-end
-
-Section2:CreateToggle("No Clip", {Description = "Make you no clip!!!"}, function(ToggleState)
+    end
+    
+    Section2:CreateToggle("No Clip", {Description = "Make you no clip!!!"}, function(ToggleState)
     NoclipEnabled = ToggleState
     while NoclipEnabled do
         NoclipFunction()
@@ -1883,9 +1948,9 @@ Section2:CreateToggle("No Clip", {Description = "Make you no clip!!!"}, function
             part.CanCollide = true
         end
     end
-end)
-
-Section2:CreateToggle("Anti Fall", {Description = "Make you Stop On AIR!"}, function(ToggleState)
+    end)
+    
+    Section2:CreateToggle("Anti Fall", {Description = "Make you Stop On AIR!"}, function(ToggleState)
     if ToggleState then
         antifall = Instance.new("BodyVelocity", game.Players.LocalPlayer.Character.HumanoidRootPart)
         antifall.Velocity = Vector3.new(0, 0, 0)
@@ -1895,61 +1960,1706 @@ Section2:CreateToggle("Anti Fall", {Description = "Make you Stop On AIR!"}, func
             antifall = nil
         end
     end
-end)
-
-local function BypassFunction()
-    local ohString1 = "Sky Walk2"
-    local player = game.Players.LocalPlayer
-    local ohTable2 = {
-        ["char"] = workspace.PlayerCharacters[player.Name],
-        ["cf"] = workspace.PlayerCharacters[player.Name].HumanoidRootPart.CFrame
-    }
+    end)
     
-    game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)            
-task.wait(2.5)
-end
+    Section2:CreateButton("Fruit Swim", function()
+    pcall(function()
+        local coatBubble = Instance.new('Part', game.Workspace.PlayerCharacters[plr.Name])
+        coatBubble.Name = [[coatBubble]]
+        coatBubble.AssemblyAngularVelocity = Vector3.new(0.000001464240085624624, -5.8524470941115e-15, 9.883792699838523e-07)
+        coatBubble.AssemblyCenterOfMass = Vector3.new(5678.16650390625, 3.668407440185547, -16462.451171875)
+        coatBubble.AssemblyLinearVelocity = Vector3.new(4.0199552131525706e-07, 0.00001299245468544541, -5.955385518063849e-07)
+        coatBubble.AssemblyMass = 14.130248069763184
+        coatBubble.BottomSurface = Enum.SurfaceType.Smooth
+        coatBubble.BrickColor = BrickColor.new('Pastel Blue')
+        coatBubble.CFrame = CFrame.new(5678.18994, 4.22468519, -16462.4727, 0.671212554, 0.0133095523, -0.741145372, 5.60245361e-09, 0.999838829, 0.0179551952, 0.741264939, -0.0120517546, 0.671104372)
+        coatBubble.CanCollide = false
+        coatBubble.CastShadow = false
+        coatBubble.Color = Color3.new(0.501961, 0.733333, 0.858824)
+        coatBubble.CurrentPhysicalProperties = PhysicalProperties.new(2.40300012, 0.25, 0.200000003, 1, 1)
+        coatBubble.EnableFluidForces = false
+        coatBubble.ExtentsCFrame = CFrame.new(5678.18994, 4.22468519, -16462.4727, 0.671212554, 0.0133095523, -0.741145372, 5.60245361e-09, 0.999838829, 0.0179551952, 0.741264939, -0.0120517546, 0.671104372)
+        coatBubble.ExtentsSize = Vector3.new(1, 1, 1)
+        coatBubble.Mass = 0
+        coatBubble.Material = Enum.Material.Glass
+        coatBubble.Reflectance = 5
+        coatBubble.Rotation = Vector3.new(-1.5329999923706055, -47.82899856567383, -1.1360000371932983)
+        coatBubble.Size = Vector3.new(1, 1, 1)
+        coatBubble.TopSurface = Enum.SurfaceType.Smooth
+        coatBubble.Transparency = 0.5
+        end)
+    end)
     
-Section2:CreateToggle("BypassFly", {Description = "Now u can go faster"}, function(ToggleState)
-    local BypassEnabled = ToggleState
-    while BypassEnabled do
-        BypassFunction()
-        wait() -- Substituí task.wait() por wait()
-    end
-end)
-
     
     local Section2 = Tab2:CreateSection("ESP")
+    
     Section2:CreateToggle("Island ESP", {Toggled=Settings.IslandE,Description = false}, function(state)
         Settings.IslandE=state
     end)
     
-    
     local Tab2 = Window:CreatePage("Web Hook")
-    
     local Section2 = Tab2:CreateSection("Main")
     
     Section2:CreateTextbox("Web Hook Url", "Enter here!", function(args)
         Settings.WebHookUrl=args
     end,Settings.WebHookUrl)
-    
     Section2:CreateToggle("Mention Everyone", {Toggled=Settings.MentionEveryone,Description = false}, function(state)
         Settings.MentionEveryone=state
     end)
-    
-    local Section2 = Tab2:CreateSection("DF")
-    
-    Section2:CreateToggle("DF Webhook", {Toggled=Settings.DFWebHook,Description = "Will notify when you have DF"}, function(state)
+
+    Section2:CreateButton("Test Web Hook", function()
+        pcall(function()
+            local plr = game.Players.LocalPlayer
+            local fruit = "Test WebHook Sucess!!!"
+        
+            local msg = {
+                ["username"] = "UniverseHub", 
+                ["avatar_url"] = "https://media.discordapp.net/attachments/1115444244744781835/1154536363182542908/static.png?width=204&height=204", -- Adicionando a URL da foto do bot
+                ["content"] = ("@everyone") or "",
+                ["embeds"] = {{
+                    ["title"] = "Grand Piece Online",
+                    ["description"] = "WebHook Test",
+                    ["type"] = "rich",
+                    ["color"] = tonumber(47103),
+                    ["fields"] = {
+                        {
+                            ["name"] = "Name",
+                            ["value"] = "||" .. plr.Name .. "||",
+                            ["inline"] = false
+                        },
+                        {
+                            ["name"] = "Testing",
+                            ["value"] = "WebHook",
+                            ["inline"] = false
+                        }
+                    },
+                    ["footer"] = {
+                        ["icon_url"] = "https://media.discordapp.net/attachments/1115444244744781835/1154536363182542908/static.png?width=204&height=204",
+                        ["text"] = "Universe Hub (" .. os.date("%X") .. ")"
+                    }
+                }}
+            }
+        
+            local function SendWebHook()
+                request({
+                    Url = Settings.WebHookUrl,
+                    Method = "POST",
+                    Headers = {
+                        ["Content-Type"] = "application/json"
+                    },
+                    Body = game:GetService("HttpService"):JSONEncode(msg)
+                })
+            end
+        
+            SendWebHook()
+        end)        
+    end)
+
+
+    local Section2 = Tab2:CreateSection("Devil Fruit Notify")
+    Section2:CreateToggle("Devil Fruit Webhook", {Toggled=Settings.DFWebHook,Description = "Will notify when you have DF"}, function(state)
         Settings.DFWebHook=state
     end)
     
-    local Tab2 = Window:CreatePage("Settings")
+    local Tab2 = Window:CreatePage("Teleports Sea 1")
     
-    local Section2 = Tab2:CreateSection("Main")
+        local Section2 = Tab2:CreateSection("Normal Bypass (Active Bypass Fly)")
     
-    Section2:CreateSlider("Tween Speed", {Min = 10, Max = 100, DefaultValue = Settings.vt}, function(value)
-        Settings.vt=value
+        local BypassEnabled1 = false
+    
+    local function BypassFunction1()
+        pcall(function()
+        local ohString1 = "Sky Walk2"
+        local player = game.Players.LocalPlayer
+        local ohTable2 = {
+            ["char"] = workspace.PlayerCharacters[player.Name],
+            ["cf"] = workspace.PlayerCharacters[player.Name].HumanoidRootPart.CFrame
+        }
+        
+        game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)            
+        task.wait(1)
+    end)
+    end
+    
+    Section2:CreateToggle("Bypass Fly", {Description = "Now u can go faster"}, function(ToggleState1)
+        pcall(function()
+        BypassEnabled1 = ToggleState1
+        while BypassEnabled1 do
+            BypassFunction1()
+            wait()
+        end
+    end)
     end)
     
+    Section2:CreateButton("Instant Teleport Fishman Island", function()
+            pcall(function()
+            local player = game.Players.LocalPlayer
+            player.Character.HumanoidRootPart.CFrame = CFrame.new(5639.86865, -92.762001, -16611.4688)
+        end)
+        end)
+                        
+        Section2:CreateButton("Teleport Farm Place (Fishman Island)", function()
+                pcall(function()
+                getgenv().Speed = 125
+                local finalDestination = CFrame.new(Vector3.new(7878, -2089, -17111))
+                game:GetService("TweenService"):Create(
+            game.Players.LocalPlayer.Character.HumanoidRootPart,
+            TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+            {CFrame = finalDestination}
+            ):Play()
+        end)
+        end)
+                        
+        Section2:CreateButton("Teleport World Scroll", function()
+                            pcall(function()
+                            getgenv().Speed = 125
+                            local finalDestination = CFrame.new(Vector3.new(-12188, 10, -18545))
+                            game:GetService("TweenService"):Create(
+                                game.Players.LocalPlayer.Character.HumanoidRootPart,
+                                TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                                {CFrame = finalDestination}
+                            ):Play()
+                end)
+            end)
+    
+    Section2:CreateButton("Town of Beginnings", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(965.146, 10, 1195.127))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Marine Fort F-1", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(2904.113, 25, -994.2))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Sandora", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-1316.089, 15, 1129.95))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Shell's Town", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-605.248, 15, -4430.41))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Zou Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-4458.681, 10, -2502.741))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Restaurant Baratie", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-3909.713, 55, -5569.912))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Orange Town", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-6999.987, 10, -5345.705))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Mysterious Cliff", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(2180.005, 415, -8628.285))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Roca Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(5426.218, 20, -4918.854))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Colosseum", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-2019.975, 10, -7661.091))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Sphinx Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-6327.812, 45, -10129.278))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Kori Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-6684.44, 10, 1828.623))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Arlong Park", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(652.855, 15, -13122.346))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Land of the Sky", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(9016.793, 1440, -10542.829))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Knock-Up Stream Rock", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(8116, 10, -9819))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Gravito's Fort", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(2611.159, 15, -15359.032))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Fishman Cave", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(5682.19, 5, -16458.479))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Marine Base G-1", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-9955.175, 70, -14910.613))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Coco Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-4262.249, 10, -15531.864))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Reverse Mountain", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-14338, 20, -9446))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Reverse Mountain", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-12184.12890625, 3.2737002372742, -18545.69921875))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    local Section2 = Tab2:CreateSection("Pika-Pika Bypass")
+    
+    Section2:CreateButton("Town of Beginnings (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(965.146, 10, 1195.127))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Marine Fort F-1 (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(2904.113, 25, -994.2))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Sandora (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-1316.089, 15, 1129.95))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Shell's Town (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-605.248, 15, -4430.41))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Zou Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-4458.681, 10, -2502.741))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Restaurant Baratie (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-3909.713, 55, -5569.912))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Orange Town (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-6999.987, 10, -5345.705))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Mysterious Cliff (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(2180.005, 415, -8628.285))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Roca Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(5426.218, 20, -4918.854))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Colosseum (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-2019.975, 10, -7661.091))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Sphinx Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-6327.812, 45, -10129.278))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Kori Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-6684.44, 10, 1828.623))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Arlong Park (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(652.855, 15, -13122.346))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Land of the Sky (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(9016.793, 1440, -10542.829))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Knock-Up Stream Rock (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(8116, 10, -9819))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Gravito's Fort (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(2611.159, 15, -15359.032))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Fishman Cave (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(5682.19, 5, -16458.479))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Marine Base G-1 (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-9955.175, 70, -14910.613))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Coco Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-4262.249, 10, -15531.864))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Reverse Mountain (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-12184.12890625, 3.2737002372742, -18545.69921875))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    local Tab2 = Window:CreatePage("Teleports Sea 2")
+    
+    local Section2 = Tab2:CreateSection("Normal Bypass (Active Bypass Fly)")
+    
+    local BypassEnabled = false
+    
+    local function BypassFunction()
+        local ohString1 = "Sky Walk2"
+        local player = game.Players.LocalPlayer
+        local ohTable2 = {
+            ["char"] = workspace.PlayerCharacters[player.Name],
+            ["cf"] = workspace.PlayerCharacters[player.Name].HumanoidRootPart.CFrame
+        }
+        
+        game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)            
+        task.wait(1)
+    end
+    
+    Section2:CreateToggle("Bypass Fly", {Description = "Now u can go faster"}, function(ToggleState)
+        BypassEnabled = ToggleState
+        while BypassEnabled do
+            BypassFunction()
+            wait()
+        end
+    end)
+    
+    Section2:CreateButton("Thriller Bark", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(9338, 15, -7040))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Colosseum of Arc", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(2219.00098, 4.75781488, 6058.27246))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Desert Kingdom", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-3673.99585, 19.3691502, 405.525574))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Rovo Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-6247.56934, 102.015671, 359.281433))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Dokkan Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(9303.5615234375, 30.17473030090332, -11833.7001953125))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Foro Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(8271.4404296875, -3.2496461868286133, 4333.2412109375))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Reverse Mountain", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-9044.43359375, 113.1083984375, 434.6337890625))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Rose Kingdom", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(8262.8994140625, 230.00009155273438, 10191.80078125))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Sashi Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-1553.2940673828125, 8.53828239440918, -6160.43896484375))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    Section2:CreateButton("Spirit Island", function()
+        pcall(function()
+            getgenv().Speed = 125
+            local finalDestination = CFrame.new(Vector3.new(-1389.3193359375, -152.4592742919922, 9937.9609375))
+            game:GetService("TweenService"):Create(
+        game.Players.LocalPlayer.Character.HumanoidRootPart,
+        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+        {CFrame = finalDestination}
+        ):Play()
+    end)
+    end)
+    
+    local Section2 = Tab2:CreateSection("Pika-Pika Bypass")
+    
+    Section2:CreateButton("Teleport Thriller Bark (Pika)", function()
+                        pcall(function()
+                            local args = {
+                                [1] = "Light Flight"
+                            }
+                            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                                        getgenv().Speed = 215
+                                    local finalDestination1 = CFrame.new(Vector3.new(9338, 15, -7040))
+                                    local tween1 = game:GetService("TweenService"):Create(
+                                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                                        {CFrame = finalDestination1}
+                                    )
+                                    tween1:Play()
+                                    tween1.Completed:Wait()
+                            local player = game.Players.LocalPlayer
+            game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+        end)
+    end)
+    
+    Section2:CreateButton("Colosseum of Arc (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(2219.00098, 4.75781488, 6058.27246))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Desert Kingdom (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-3673.99585, 19.3691502, 405.525574))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Rovo Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-6247.56934, 102.015671, 359.281433))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Dokkan Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(9303.5615234375, 30.17473030090332, -11833.7001953125))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Foro Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(8271.4404296875, -3.2496461868286133, 4333.2412109375))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Reverse Mountain (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-9044.43359375, 113.1083984375, 434.6337890625))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Rose Kingdom (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(8262.8994140625, 230.00009155273438, 10191.80078125))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Sashi Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-1553.2940673828125, 8.53828239440918, -6160.43896484375))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    Section2:CreateButton("Spirit Island (Pika)", function()
+        pcall(function()
+            local args = {
+                [1] = "Light Flight"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+                        getgenv().Speed = 215
+                    local finalDestination1 = CFrame.new(Vector3.new(-1389.3193359375, -152.4592742919922, 9937.9609375))
+                    local tween1 = game:GetService("TweenService"):Create(
+                        game.Players.LocalPlayer.Character.HumanoidRootPart,
+                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
+                        {CFrame = finalDestination1}
+                    )
+                    tween1:Play()
+                    tween1.Completed:Wait()
+            local player = game.Players.LocalPlayer
+    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
+    end)
+    end)
+    
+    
+    local Tab2 = Window:CreatePage("Fruit Things")
+    
+    local Section2 = Tab2:CreateSection("Gomu-Gomu")
+    
+    local function GomuBloon()
+    pcall(function()
+    local ohString1 = "Gomu-Gomu no Balloon"
+    local ohTable2 = {
+        ["cf"] = CFrame.new()
+    }
+    game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)
+    end)
+    end
+    
+    Section2:CreateToggle("Gomu -50% Damage", {Description = ""}, function(GomuBallon)
+                pcall(function()
+                toggleActive = GomuBallon
+                while toggleActive do
+                GomuBloon()
+                task.wait()
+            end
+        end)
+    end)
+    
+    local function GomuInsta()
+            pcall(function()
+                local ohString1 = "Gomu-Gomu no Gatling"
+                local ohTable2 = {
+                    ["cf"] = CFrame.new(9505.12891, 16.1434498, -7039.53906, 0.523286402, -0.000454191875, -0.852156758, 0.0104271099, 0.999928415, 0.00587005354, 0.852093101, -0.0119572515, 0.523253679)
+                }
+                
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)
+        end)
+    end
+    
+    Section2:CreateToggle("Gomu Auto Gatling (Instant Gatling)", {Description = ""}, function(GomuGatling)
+                pcall(function()
+                toggleActive = GomuGatling
+                while toggleActive do
+                GomuInsta()
+                task.wait()
+            end
+        end)
+    end)
+    
+    local function GomuPistolAim()
+        pcall(function()
+            local ohString1 = "Gomu-Gomu no Pistol"
+            local player = game.Players.LocalPlayer
+            local playerCharacter = game.Workspace.PlayerCharacters[player.Name]
+            local humanoidRootPart = playerCharacter:WaitForChild("HumanoidRootPart")
+            local function getDistance(point1, point2)
+                return (point1 - point2).Magnitude
+            end
+            local closestPlayer = nil
+            local closestDistance = 125
+            for _, otherPlayer in ipairs(game.Players:GetPlayers()) do
+                if otherPlayer ~= player then
+                    local otherCharacter = game.Workspace.PlayerCharacters[otherPlayer.Name]
+                    local otherHumanoidRootPart = otherCharacter:FindFirstChild("HumanoidRootPart")
+                    if otherHumanoidRootPart then
+                        local distance = getDistance(humanoidRootPart.Position, otherHumanoidRootPart.Position)
+                        if distance <= closestDistance then
+                            closestPlayer = otherPlayer
+                            closestDistance = distance
+                        end
+                    end
+                end
+            end
+            if closestPlayer then
+                local ohTable2 = {
+                    ["targetCF"] = humanoidRootPart.CFrame,
+                    ["armCF"] = humanoidRootPart.CFrame,
+                    ["handCF"] = humanoidRootPart.CFrame,
+                    ["target"] = game.Workspace.PlayerCharacters[closestPlayer.Name],
+                    ["cf"] = humanoidRootPart.CFrame
+                }
+        
+                game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)
+            end
+        end)    
+        end
+    
+        Section2:CreateToggle("Gomu Auto Attack Closest Player (Instant Pistol)", {Description = ""}, function(GomuPistol)
+            pcall(function()
+            toggleActive = GomuPistol
+            while toggleActive do
+                GomuPistolAim()
+                task.wait()
+            end
+        end)
+    end)
+    
+    local Section2 = Tab2:CreateSection("Mera-Mera")
+    
+    local function MeraHikenS()
+        pcall(function()
+            local args = {
+                [1] = "Hiken"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+        end)
+    end
+    
+    Section2:CreateToggle("Mera Hiken Stack", {Description = ""}, function(MeraHikenStack)
+        pcall(function()
+        toggleActive = MeraHikenStack
+        while toggleActive do
+            MeraHikenS()
+            task.wait()
+        end
+    end)
+    end)
+    
+    local function MeraHikenR()
+        pcall(function()
+            local players = game:GetService("Players"):GetPlayers()
+            local remotePath = "ServerScriptService.Skills.Skills.SkillContainer.Mera-Mera.Hiken"
+            
+            for _, player in ipairs(players) do
+                local playerRemote = game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|" .. remotePath)
+                if playerRemote then
+                    playerRemote:InvokeServer()
+                else
+                    warn("Remote não encontrado para o jogador: " .. player.Name)
+                end
+            end
+        end)
+        
+    end
+    
+    Section2:CreateToggle("Mera Hiken Release", {Description = ""}, function(MeraHikenRelease)
+        pcall(function()
+            toggleActive = MeraHikenRelease
+            while toggleActive do
+                MeraHikenR()
+                task.wait()
+            end
+        end)
+    end)
+    
+    local function MeraPillarS()
+        pcall(function()
+    
+    local args = {
+        [1] = "Flame Pillar"
+    }
+    
+    game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+            end)
+    end
+    
+    Section2:CreateToggle("Mera Pillar Stack", {Description = ""}, function(MeraPillarStack)
+        pcall(function()
+        toggleActive = MeraPillarStack
+        while toggleActive do
+            MeraPillarS()
+            task.wait()
+        end
+    end)
+    end)
+    
+    local function MeraPillarR()
+        pcall(function()
+            local players = game:GetService("Players"):GetPlayers()
+            local remotePath = "ServerScriptService.Skills.Skills.SkillContainer.Mera-Mera.Flame Pillar"
+            
+            for _, player in ipairs(players) do
+                local playerName = player.Name
+                local playerRemote = game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(playerName .. "|" .. remotePath)
+                if playerRemote then
+                    playerRemote:InvokeServer()
+                else
+                    warn("Remote não encontrado para o jogador: " .. playerName)
+                end
+            end
+        end)
+        
+    end
+    
+    Section2:CreateToggle("Mera Pillar Release", {Description = ""}, function(MeraPillarRelease)
+        pcall(function()
+            toggleActive = MeraPillarRelease
+            while toggleActive do
+                MeraPillarR()
+                task.wait()
+            end
+        end)
+    end)
+    
+    local Section2 = Tab2:CreateSection("Pika-Pika")
+    
+    local function PikaLungeS()
+        pcall(function()
+            local ohString1 = "Light Lunge"
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1)
+            end)
+        end
+        
+    Section2:CreateToggle("Pika Lunge Stack", {Description = ""}, function(PikaLunge)
+                    pcall(function()
+                    toggleActive = PikaLunge
+                    while toggleActive do
+                        PikaLungeS()
+                task.wait()
+            end
+        end)
+    end)
+    
+    local function PikaLungeAim()
+        pcall(function()
+            local Players = game:GetService("Players")
+            local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    
+            local function encontrarJogadorMaisProximo()
+                local players = Players:GetPlayers()
+                local currentPlayer = Players.LocalPlayer
+                local closestPlayer = nil
+                local shortestDistance = 100
+    
+                for _, player in ipairs(players) do
+                    if player ~= currentPlayer then
+                        local character = player.Character
+                        if character and character:FindFirstChild("Humanoid") then
+                            local distance = (currentPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Magnitude
+                            if distance < shortestDistance then
+                                shortestDistance = distance
+                                closestPlayer = player
+                            end
+                        end
+                    end
+                end
+    
+                return closestPlayer
+            end
+    
+            local players = Players:GetPlayers()
+    
+            for _, plr in ipairs(players) do
+                local closestPlayer = encontrarJogadorMaisProximo()
+    
+                if closestPlayer then
+                    local args = {
+                        [1] = CFrame.new(closestPlayer.Character.HumanoidRootPart.Position) * CFrame.Angles(-3.102909803390503, -0.431573748588562, -3.1254048347473145)
+                    }
+    
+                    local skillName = plr.name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Lunge"
+    
+                    ReplicatedStorage.PlayerRemotes:FindFirstChild(skillName):FireServer(unpack(args))            
+                end
+            end
+        end)    
+    end
+    
+    
+        Section2:CreateToggle("Pika Auto Attack Closest Player (Instant Pika-Lunge)", {Description = ""}, function(PikaLunge)
+            pcall(function()
+            toggleActive = PikaLunge
+            while toggleActive do
+                PikaLungeAim()
+                task.wait(0.5)
+            end
+        end)
+    end)
+
+
+    local function PikaKickS()
+        pcall(function()
+            local args = {
+                [1] = "Light Kick"
+            }
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+            task.wait()
+            end)
+        end
+        
+    Section2:CreateToggle("Pika Kick Stack", {Description = ""}, function(PikaKickStack)
+                    pcall(function()
+                    toggleActive = PikaKickStack
+                    while toggleActive do
+                        PikaKickS()
+                task.wait()
+            end
+        end)
+    end)
+
+    local function PikaKickR()
+        pcall(function()
+            local skillFolder = game:GetService("ReplicatedStorage").PlayerRemotes
+            local player = game.Players.LocalPlayer
+            local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        
+            if humanoidRootPart then
+                local position = humanoidRootPart.Position
+        
+                for _, skillItem in ipairs(skillFolder:GetChildren()) do
+                    pcall(function()
+                        local args = {
+                            [1] = position,
+                            [2] = CFrame.new(position + Vector3.new(0, 5, 0)) * CFrame.Angles(-3.002415418624878, -0.557424008846283, 2.430689811706543)
+                        }
+        
+                        skillItem:FireServer(unpack(args))
+                    end)
+                end
+            else
+                warn("HumanoidRootPart not found!")
+            end
+        end) 
+    end
+    
+    Section2:CreateToggle("Pika Kick Release", {Description = ""}, function(PikaKickRelease)
+        pcall(function()
+            toggleActive = PikaKickRelease
+            while toggleActive do
+                PikaKickR()
+                task.wait(0.5)
+            end
+        end)
+    end)
+
+    local function InfRay()
+        pcall(function()
+            local args = {
+            [1] = "Light Ray",
+            [2] = {
+                ["pos"] = Vector3.new(9475.990234375, 12.788227081298828, -7034.09814453125)
+            }
+        }
+        
+        game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+        end)
+    end
+    
+    Section2:CreateToggle("Pika Infinite LightRay", {Description = ""}, function(InfiniteRay)
+        pcall(function()
+            toggleActive = InfiniteRay
+            while toggleActive do
+                InfRay()
+                task.wait(10)
+            end
+        end)
+    end)
+
+    local Section2 = Tab2:CreateSection("Paw-Paw")
+
+    local function PawCannonS()
+        pcall(function()
+            local args = {
+                [1] = "Paw Cannon",
+                [2] = CFrame.new(-0, 0, -0) * CFrame.Angles(-0.0215043593198061, 0.4616168439388275, 0.015874940901994705)
+            }
+            
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+        end)
+    end
+    
+    Section2:CreateToggle("Paw Cannon Stack", {Description = ""}, function(PawCannonStack)
+        pcall(function()
+            toggleActive = PawCannonStack
+            while toggleActive do
+                PawCannonS()
+                task.wait()
+            end
+        end)
+    end)
+
+    local function PawCannonR()
+        pcall(function()
+            local player = game.Players.LocalPlayer
+            local playerName = player.Name
+            local humanoidRootPart = player.Character.HumanoidRootPart
+            local position = humanoidRootPart.Position + Vector3.new(0, 5, 0)
+            local remotes = game:GetService("ReplicatedStorage").PlayerRemotes
+            local eventName = playerName .. "|ServerScriptService.Skills.Skills.SkillContainer.Paw-Paw.Paw Cannon"
+            local args = {
+                [1] = CFrame.new(position) * CFrame.Angles(0.0768343061208725, -0.13681165874004364, 0.010459227487444878)
+            }
+            remotes:FindFirstChild(eventName):FireServer(unpack(args))
+        end)            
+    end
+    
+    Section2:CreateToggle("Paw Cannon Release", {Description = ""}, function(PawCannonRelease)
+        pcall(function()
+            toggleActive = PawCannonRelease
+            while toggleActive do
+                PawCannonR()
+                task.wait()
+            end
+        end)
+    end)
+
+    local function PawBombS()
+        pcall(function()
+            local args = {
+                [1] = "Paw Bomb",
+                [2] = CFrame.new(0, 0, 0) * CFrame.Angles(-1.2786227464675903, -0.8662163615226746, -1.19479238986969)
+            }
+            
+            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+        end)
+    end
+    
+    Section2:CreateToggle("Paw Bomb Stack", {Description = ""}, function(PawBombStack)
+        pcall(function()
+            toggleActive = PawBombStack
+            while toggleActive do
+                PawBombS()
+                task.wait()
+            end
+        end)
+    end)
+
+    local function PawBombR()
+        pcall(function()
+            local player = game.Players.LocalPlayer
+            local playerName = player.Name
+            local humanoidRootPart = player.Character.HumanoidRootPart
+            local position = humanoidRootPart.Position + Vector3.new(0, 5, 0)
+            local remotes = game:GetService("ReplicatedStorage").PlayerRemotes
+            local eventName = playerName .. "|ServerScriptService.Skills.Skills.SkillContainer.Paw-Paw.Paw Bomb"
+            local args = {
+                [1] = CFrame.new(position) * CFrame.Angles(0.0768343061208725, -0.13681165874004364, 0.010459227487444878)
+            }
+            remotes:FindFirstChild(eventName):FireServer(unpack(args))
+        end)            
+    end
+    
+    Section2:CreateToggle("Paw Bomb Release", {Description = ""}, function(PawBombRelease)
+        pcall(function()
+            toggleActive = PawBombRelease
+            while toggleActive do
+                PawBombR()
+                task.wait()
+            end
+        end)
+    end)
+
+    local Section2 = Tab2:CreateSection("Yuki-Yuki")
+
+    local function YukiSnowGustS()
+            pcall(function()
+                local args = {
+                    [1] = "Snow Gust"
+                }
+                game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+            end)
+        end
+    
+    Section2:CreateToggle("Yuki Snow Gust Stack", {Description = ""}, function(YukiGustStack)
+        pcall(function()
+            toggleActive = YukiGustStack
+            while toggleActive do
+                YukiSnowGustS()
+                task.wait()
+            end
+        end)
+    end)
+
+    local function YukiSnowGustR()
+        pcall(function()
+            local player = game.Players.LocalPlayer
+            local playerName = player.Name
+            local humanoidRootPart = player.Character.HumanoidRootPart
+            local position = humanoidRootPart.Position + Vector3.new(0, 5, 0)
+            local remotes = game:GetService("ReplicatedStorage").PlayerRemotes
+            local eventName = playerName .. "|ServerScriptService.Skills.Skills.SkillContainer.Yuki-Yuki.Snow Gust"
+            local args = {
+                [1] = CFrame.new(position) * CFrame.Angles(0, -0, 0)
+            }
+            remotes:FindFirstChild(eventName):FireServer(unpack(args))
+        end)
+    end
+
+Section2:CreateToggle("Yuki Snow Gust Release", {Description = ""}, function(YukiGustRelease)
+    pcall(function()
+        toggleActive = YukiGustRelease
+        while toggleActive do
+            YukiSnowGustR()
+            task.wait()
+        end
+    end)
+end)
+
+local function YukiSnowStormStack()
+    pcall(function()
+        local args = {
+            [1] = "Snow Storm"
+        }
+        game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
+    end)
+end
+
+local function YukiSnowStormStop()
+    pcall(function()
+        local player = game.Players.LocalPlayer
+        local playerName = player.Name
+        local humanoidRootPart = player.Character.HumanoidRootPart
+        local position = humanoidRootPart.Position + Vector3.new(0, 5, 0)
+        local remotes = game:GetService("ReplicatedStorage").PlayerRemotes
+        local eventName = playerName .. "|ServerScriptService.Skills.Skills.SkillContainer.Yuki-Yuki.Snow Storm"
+        local args = {
+            [1] = CFrame.new(position) * CFrame.Angles(0.0768343061208725, -0.13681165874004364, 0.010459227487444878)
+        }
+        remotes:FindFirstChild(eventName):FireServer(unpack(args))
+    end)
+end
+
+local isYukiSnowStormActive = false
+
+local function StartYukiSnowStormLoop()
+    pcall(function()
+    while isYukiSnowStormActive do
+        YukiSnowStormStack()
+        task.wait()
+    end
+end)
+end
+
+Section2:CreateToggle("Infinite Yuki Snow Storm", {Description = ""}, function(toggleState)
+    isYukiSnowStormActive = toggleState
+    pcall(function()
+    if isYukiSnowStormActive then
+        StartYukiSnowStormLoop()
+    else
+        YukiSnowStormStop()
+    end
+end)
+end)
+
+    local Tab2 = Window:CreatePage("Settings")
+    local Section2 = Tab2:CreateSection("Main")
+    Section2:CreateSlider("Tween Speed", {Min = 50, Max = 100, DefaultValue = Settings.vt}, function(value)
+        Settings.vt=value
+    end)
     
     function IsBusoActivated()
         if not plr.Character then
@@ -1962,7 +3672,6 @@ end)
         end
         return false
     end
-    
     spawn(
         function()
             while wait(1) do
@@ -2064,10 +3773,9 @@ end)
             end
         end
     end
-    
     func = GetClick("MeleeScript", 85)
     function AttackInCooldown()
-        if NguyHiem then return false end
+        if NguyHiem then return true end
         if not func or getfenv(func).script.Parent == nil then
             func = GetClick("MeleeScript", 85)
         end
@@ -2078,7 +3786,6 @@ end)
         end
         
     end  
-    
     local collector = Instance.new("ScreenGui")
     collector.Parent=game.CoreGui
     local c= false
@@ -2088,7 +3795,6 @@ end)
         UserInputType = Enum.UserInputType.MouseButton1
     }
     local func
-    
     function GetClick(x, m)
         for i, v in ipairs(getgc()) do
             if pcall(function() return tostring(getfenv(v).script) end) and tostring(getfenv(v).script) == x and (getfenv(v).script.Parent) ~= nil then
@@ -2098,7 +3804,6 @@ end)
             end
         end
     end
-    
     function Clickc()
         spawn(function()
             if pcall(function() return tostring(getfenv(func).script) end) and not func or getfenv(func).script.Parent == nil then
@@ -2109,7 +3814,6 @@ end)
             end
         end)
     end
-    
     function GetClickGun()
         for k, v in pairs(getgc()) do
             if tostring(getfenv(v).script) == "GunMain" and (getfenv(v).script.Parent) ~= nil then
@@ -2119,7 +3823,6 @@ end)
             end
         end
     end
-    
     local gunfunc
     function ClickcGun()
         spawn(function()
@@ -2152,7 +3855,6 @@ end)
         end
         return old(...)
     end)
-    
     local data = game.ReplicatedStorage["Stats"..game.Players.LocalPlayer.Name]
     getgenv().ClickMelee = function() 
         c=true
@@ -2162,7 +3864,6 @@ end)
         data.Stats.Peli.Value=data.Stats.Peli.Value-1
         noprint=false
     end
-    
     getgenv().ClickGun = function() 
         cGun=true
         data.Stats.Peli.Value=data.Stats.Peli.Value+1
@@ -2171,7 +3872,6 @@ end)
         data.Stats.Peli.Value=data.Stats.Peli.Value-1
         noprint=false
     end
-    
     function Click(type)
         getgenv().ClickMelee()
     end
@@ -2204,11 +3904,7 @@ end)
         shootpos = pos
         getgenv().ClickGun()
         Reload()
-    
-        -- --pcall(Reload)
-        -- game:GetService("VirtualInputManager"):SendKeyEvent(true, "R", false, game)
-        -- game:GetService("VirtualInputManager"):SendKeyEvent(false, "R", false, game)
-        wait(0.3)
+        wait(.3)
         shooting = false
     end
     
@@ -2312,7 +4008,6 @@ end)
             end
         end
     end
-    
     function CanFarm(v) 
         return game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and
         game.Players.LocalPlayer.Character:FindFirstChild("Humanoid").Health > 0 and
@@ -2320,7 +4015,6 @@ end)
         not plr.PlayerGui:FindFirstChild("DEATHGUI") and
         v:FindFirstChild("HumanoidRootPart")
     end
-    
     function InstantTp(pos) 
         if plr.Character:FindFirstChild("HumanoidRootPart") then 
             plr.Character.HumanoidRootPart.CFrame=pos
@@ -2328,7 +4022,6 @@ end)
     end
     local TpPoss
     do 
-    
         local cc = false
         game:GetService("RunService").Stepped:connect(function()
             if not cc and TpPoss then
@@ -2341,7 +4034,6 @@ end)
             end
         end)
     end
-    
     function SendKey(Key,a) 
         game:GetService("VirtualInputManager"):SendKeyEvent(
             a,
@@ -2350,7 +4042,6 @@ end)
             game
         )
     end
-    
     spawn(function() 
         while wait() do 
             if Settings.Legit then 
@@ -2390,7 +4081,6 @@ end)
                 if not StoringDF then 
                     EquipTool()
                 end
-    
                 local Dt = CheckQuest(nil,IsAdvanceMode(Settings.FarmPath))
                 if Settings.AutoBusoQuest and data.Stats.BusoMastery.Value == 0 and data.Stats.Level.Value > 80 and Settings.FarmMode == "Sword" then
                     if GetCurrentQuest() == "Road to Armament" then
@@ -2401,7 +4091,6 @@ end)
                         end
                     end
                 end
-    
                 local mob = Dt.Mob
                 local Quest = Dt.Questpos
     
@@ -2414,13 +4103,12 @@ end)
                 if not game.Workspace.NPCs:FindFirstChild(mob) and not plr.PlayerGui:FindFirstChild("DEATHGUI") then
                     Tp(Dt.Mobpos)
                 end
-    
                 if game:GetService("Players").LocalPlayer.PlayerGui.Quest.Quest.Visible == true then
                     if GetCurrentQuest()~=Dt.Quest then
                         game:GetService("ReplicatedStorage").Events.Quest:InvokeServer({"quit"})
                     end
                 end
-    
+                --if not syn then Dt.LevelReq=math.huge end
                 if
                     true and game:GetService("Players").LocalPlayer.PlayerGui.Quest.Quest.Visible == false and
                         not game.Players.LocalPlayer.QuestCD.Value and
@@ -2534,10 +4222,10 @@ end)
                                     end
                                     local cf
                                     if Settings.FarmMode == "Black Leg" then
-                                        cf = Vector3.new(curr.X, Dt.BlackLegY, curr.Z)
+                                        cf = CFrame.new(curr.X, Dt.BlackLegY, curr.Z)
                                     else
                                         if Dt.SwordY then
-                                            cf = Vector3.new(curr.X, Dt.SwordY, curr.Z)
+                                            cf = CFrame.new(curr.X, Dt.SwordY, curr.Z)
                                         else
                                             cf = curr + Vector3.new(0, -11, 0)
                                         end
@@ -2548,7 +4236,6 @@ end)
                                     else
                                         dist = 20
                                     end
-    
                                     if CountNear(mob, dist) > 0  then
                                         if CheckReq() then
                                             local function Farmable()
@@ -2565,66 +4252,22 @@ end)
                                                     )
                                                 elseif Settings.FarmMode =="Sword" then
                                                     if IsSkillReady("Rapid Slashes") and data.Stamina.Value>25 then 
-                                                        game:GetService("VirtualInputManager"):SendKeyEvent(
-                                                            true,
-                                                            Enum.KeyCode.R,
-                                                            false,
-                                                            game
-                                                        )
-                                                        local tvk=tick()
-                                                        repeat wait()
-                                                            if AttackInCooldown() then 
-                                                                Click()
-                                                            else
-    
-                                                            end
-                                                            
-                                                            local Y = Dt.RapidY
-                                                            if not RapidHold() then Y=Dt.CooldownY end
-                                                            if plr.Character:FindFirstChild("HumanoidRootPart") then
-                                                                if syn then
-                                                                    local rac = curr
-                                                                    Tp(QuayNgang(CFrame.new(rac.X,Y,rac.Z)))
-                                                                else
-                                                                    if RapidHold() then 
-                                                                        local v = GetNearestMob(mob)
-                                                                        if v and v:FindFirstChild("HumanoidRootPart") then 
-                                                                            local rac = v.HumanoidRootPart.CFrame
-                                                                            
-                                                                            -- local bm = plr.Character.UpperTorso:FindFirstChild(rnd) or Instance.new("BodyGyro",game.Players.LocalPlayer.Character.UpperTorso)
-                                                                            -- bm.Name=rnd
-                                                                            -- bm.CFrame = QuayNgang(CFrame.new(rac.X,Dt.RapidY,rac.Z))
-                                                                            -- bm.MaxTorque = Vector3.new(0, math.huge, 0)
-                                                                            -- bm.D = tonumber(shared.D or 0)
-                                                                            -- bm.P = tonumber(shared.P or 5000)      
-                                                                            Tp(rac*CFrame.new(0,0,10))                                               
-                                                                            ---TpPoss=rac*CFrame.new(0,0,7)
-                                                                        end
-                                                                    end--plr.Character.Humanoid.PlatformStand=true
-                                                                end 
-                                                            end
+                                                        if CountNear(mob,23,Ff)>0 then 
                                                             game:GetService("VirtualInputManager"):SendKeyEvent(
-                                                            true,
-                                                            Enum.KeyCode.R,
-                                                            false,
-                                                            game
-                                                        )
-                                                        until not IsSkillReady("Rapid Slashes") or CountNear(mob, 40,Ff) ==0 or
-                                                        not Settings.Farm or tick()-tvk >7
-                                                        if plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("UpperTorso") and plr.Character.UpperTorso:FindFirstChild(rnd) then 
-                                                            plr.Character.UpperTorso[rnd]:Destroy()
+                                                                true,
+                                                                Enum.KeyCode.R,
+                                                                false,
+                                                                game
+                                                            )
+                                                        else
+                                                            game:GetService("VirtualInputManager"):SendKeyEvent(
+                                                                false,
+                                                                Enum.KeyCode.R,
+                                                                false,
+                                                                game
+                                                            )
                                                         end
-                                                        if plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("UpperTorso") and plr.Character.UpperTorso:FindFirstChild(rnd) then 
-                                                            plr.Character.UpperTorso[rnd]:Destroy()
-                                                        end
-                                                       -- plr.Character.Humanoid.PlatformStand=false
-                                                        TpPoss=nil
-                                                        game:GetService("VirtualInputManager"):SendKeyEvent(
-                                                            false,
-                                                            Enum.KeyCode.R,
-                                                            false,
-                                                            game
-                                                        )
+                                                       
                                                     end
                                                 end 
                                             end
@@ -2635,10 +4278,8 @@ end)
                                             lastclick = tick()
                                         end
                                     end
-                                    
-    
                                     local oldstate = curstate
-                                    if true or Settings.FarmMode ~= "Black Leg" then
+                                    if true then
                                         if (AttackInCooldown() and tick() - lastclick > 0.6)  then
                                             if Dt.CooldownY then
                                                 cf = CFrame.new(cf.X, Dt.CooldownY, cf.Z)
@@ -2666,18 +4307,44 @@ end)
                                             end
                                         end
                                     end
+    
+                                    if Dt.Mob~="Yeti" and RapidHold() then 
+                                        local Y = Dt.RapidY
+                                        if plr.Character:FindFirstChild("HumanoidRootPart") then
+                                            if syn then
+                                                local rac = curr 
+                                                cf = QuayNgang(CFrame.new(rac.X,Y,rac.Z))
+                                            else
+                                                if RapidHold() then 
+                                                    local v = GetNearestMob(mob)
+                                                    if v and v:FindFirstChild("HumanoidRootPart") then 
+                                                        local rac = v.HumanoidRootPart.CFrame
+                                                        
+                                                        -- local bm = plr.Character.UpperTorso:FindFirstChild(rnd) or Instance.new("BodyGyro",game.Players.LocalPlayer.Character.UpperTorso)
+                                                        -- bm.Name=rnd
+                                                        -- bm.CFrame = QuayNgang(CFrame.new(rac.X,Dt.RapidY,rac.Z))
+                                                        -- bm.MaxTorque = Vector3.new(0, math.huge, 0)
+                                                        -- bm.D = tonumber(shared.D or 0)
+                                                        -- bm.P = tonumber(shared.P or 5000)      
+                                                        cf = (rac*CFrame.new(0,0,10))                                               
+                                                        ---TpPoss=rac*CFrame.new(0,0,7)
+                                                    end
+                                                end--plr.Character.Humanoid.PlatformStand=true
+                                            end 
+                                        end
+                                    end
+                                    -- if Dt.BlackLegPos then 
+                                    --     cf=Dt.BlackLegPos
+                                    -- end
+                                    
+                                    -- print(curstate,oldstate)
                                     if oldstate == 0 and curstate == 1 then
                                         lastup = tick()
                                         print("Changed")
                                     end
     
-                                    local pos = CFrame.new(cf.X, cf.Y, cf.Z)
-    
-                                    if (pos.p - plr.Character.HumanoidRootPart.Position).magnitude > 25 then
-                                        Tp(pos)
-                                    else
-                                        plr.Character.HumanoidRootPart.CFrame = pos
-                                    end
+                                    local pos = cf
+                                    Tp(pos)
                                 end
                             until not v.Parent or
                                 not (v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and
@@ -2713,6 +4380,8 @@ end)
                         game:GetService("ReplicatedStorage").Events.Quest:InvokeServer({"quit"})
                     end
                 end
+                --if not syn then questdata.LevelRequest=math.huge end
+    
                 if
                     game:GetService("Players").LocalPlayer.PlayerGui.Quest.Quest.Visible == false and
                         not game.Players.LocalPlayer.QuestCD.Value and
