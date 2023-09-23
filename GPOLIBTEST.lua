@@ -150,7 +150,7 @@ function CFAHub:CreateWindow(title, gameName, intro)
         ScrollBar = Color3.fromRGB(149, 149, 149),
         NotiBackground = Color3.fromRGB(0, 0, 0),
         Glow = Color3.fromRGB(79, 195, 247),
-        Logo = "https://media.discordapp.net/attachments/1115444244744781835/1154536363182542908/static.png?width=204&height=204"
+        Logo = "https://create.roblox.com/marketplace/asset/14853675874/UHHub"
     }
 
     table.insert(CFAHub, title)
