@@ -1391,6 +1391,10 @@ pcall(function()
 
     local function Farm()
         pcall(function()
+        Tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Rifle")
+		wait()
+		game.Players.LocalPlayer.Character.Humanoid:EquipTool(Tool)
+
         getgenv().Speed = 125
         local finalDestination = CFrame.new(Vector3.new(7878, -2089, -17111))
         local tween = game:GetService("TweenService"):Create(
@@ -1451,6 +1455,10 @@ pcall(function()
 
 local function Farm1()
         pcall(function()
+        Tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Rifle")
+		wait()
+		game.Players.LocalPlayer.Character.Humanoid:EquipTool(Tool)
+
         getgenv().Speed = 125
         local finalDestination1 = CFrame.new(Vector3.new(7733, -2175, -17220))
         local tween1 = game:GetService("TweenService"):Create(
@@ -1546,6 +1554,10 @@ game:GetService("ReplicatedStorage").Events.Quest:InvokeServer(ohTable1)
 
     local function AutoBuso()
         pcall(function()
+                Tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Rifle")
+		wait()
+		game.Players.LocalPlayer.Character.Humanoid:EquipTool(Tool)
+
         getgenv().Speed = 125
         local finalDestination3 = CFrame.new(Vector3.new(-6566.13427734375, 169.4822998046875, 1994.3565673828125))
         local tween1 = game:GetService("TweenService"):Create(
