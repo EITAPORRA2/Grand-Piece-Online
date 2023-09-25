@@ -1651,6 +1651,10 @@ pcall(function()
 end
 end)
 end)
+
+local Tab2 = Window:CreatePage("Kraken Farm")
+local Section2 = Tab2:CreateSection("Main")
+
     
     local Tab2 = Window:CreatePage("Auto Stats")
     local Section2 = Tab2:CreateSection("Main")
@@ -2374,17 +2378,7 @@ end)
     end)
     end)
     
-    Section2:CreateButton("Reverse Mountain", function()
-        pcall(function()
-            getgenv().Speed = 125
-            local finalDestination = CFrame.new(Vector3.new(-12184.12890625, 3.2737002372742, -18545.69921875))
-            game:GetService("TweenService"):Create(
-        game.Players.LocalPlayer.Character.HumanoidRootPart,
-        TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-        {CFrame = finalDestination}
-        ):Play()
-    end)
-    end)
+
     
     local Section2 = Tab2:CreateSection("Pika-Pika Bypass")
     
@@ -2775,7 +2769,7 @@ end)
             }
             game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
                         getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-12184.12890625, 3.2737002372742, -18545.69921875))
+                    local finalDestination1 = CFrame.new(Vector3.new(-14338, 20, -9446))
                     local tween1 = game:GetService("TweenService"):Create(
                         game.Players.LocalPlayer.Character.HumanoidRootPart,
                         TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
