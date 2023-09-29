@@ -8,6 +8,14 @@ pcall(function()
     queue_on_teleport([[
         loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/Grand-Piece-Online/main/GrandPiece.lua"))()
     ]])
+    function AntiDetect()
+        pcall(function()
+            game:GetService("StarterPlayer").StarterPlayerScripts.FROSTHUB_DETECTION.Disabled = true
+            game:GetService("Players").LocalPlayer.PlayerScripts.FROSTHUB_DETECTION.Disabled = true
+            end)
+        end
+AntiDetect()
+
     local NguyHiem=false
     local Settings = {
         AutoStat = {
@@ -835,7 +843,7 @@ pcall(function()
     
     
     local UniverseHub = 
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/Grand-Piece-Online/main/GPOLib.lua"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/UniverseLib/main/UniverseLib.lua"))()
     local txt="Grand Piece Online"
     if identifyexecutor()=="Krnl" then 
         txt="Grand Piece Online (KRNL)"
@@ -1011,11 +1019,11 @@ pcall(function()
         Settings.FarmMode = item
     end)
     function IsAdvanceMode(k) 
-        if k=="1-500 at Fishman" then return false else return true end
+        if k=="1-575 at Fishman" then return false else return true end
     end
     Section2:CreateDropdown("Level Farm Path", {
-        List = {"1-500 at Fishman","1-160 at Fishman, 160-190 at gravito fort, 190-500 at Fishman"},
-        Default = Settings.FarmPath or "1-500 at Fishman"
+        List = {"1-575 at Fishman","1-160 at Fishman, 160-190 at gravito fort, 190-575 at Fishman"},
+        Default = Settings.FarmPath or "1-575 at Fishman"
     }, function(item)
         Settings.FarmPath = item
     end)
@@ -1112,279 +1120,6 @@ pcall(function()
         end
         return false
     end
-    local Section2 = Tab2:CreateSection("Ship Farm")
-    Section2:CreateToggle("Ship Farm", {Toggled=Settings.ShipFarm,Description = false}, function(state)
-        Settings.ShipFarm = state
-        SetEN("Noclip", "ShipFarm", state)
-        SetEN("NoFallDame","ShipFarm",state)
-    end)
-    Section2:CreateDropdown("Ship Farm Method", {
-        List = {"Sword","Black Leg"},
-        Default =  Settings.ShipFarmMode
-    }, function(item)
-        Settings.ShipFarmMode = item
-    end)
-    Section2:CreateToggle("Kill Cannoners", {Toggled=Settings.KillCannon,Description = false}, function(state)
-        Settings.KillCannon = state
-    end)
-    -- Section2:CreateToggle("Ignore Galleons", {Description = false}, function(state)
-    --     Settings.IgnoreGalleon = state
-    -- end)
-    Section2:CreateButton("Set Ship Spawn Location", function(args)
-        Settings.ShipPos=game.Players.LocalPlayer.Character.HumanoidRootPart.Position--Vector3.new(6013.2841796875, -3.5988941192626953, -18909.974609375)--
-        UniverseHub:AddNoti("Notification", "Set Ship Farm Position Complete", 5)
-    end)
-    function TpE(e,f)
-        if e:FindFirstChild("HumanoidRootPart") then 
-            repeat wait() 
-            spawn(function() 
-                if e:FindFirstChild("HumanoidRootPart") then 
-                    Tp(e.HumanoidRootPart.CFrame*CFrame.new(0, -0.75, 3))
-                end
-            end)
-            until not e:FindFirstChild("HumanoidRootPart") or not pcall(function() return game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame end) or (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-e.HumanoidRootPart.Position).magnitude<5 or not e.Parent or not f()
-        end
-    end
-    local function KillCaMap()
-        for i, v in ipairs(game.workspace.NPCs:GetChildren()) do
-            if plr.Character:FindFirstChild("HumanoidRootPart") and v.Name == "Shark" and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health ~= 0 then
-                local magnitude = (v.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).magnitude
-                if magnitude < 10 then
-                    Click()
-                end
-            end
-        end
-    end
-    function EquipWpShip() 
-        if StoringDF then return end
-        if Settings.ShipFarmMode == "Black Leg" then
-            if
-                game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and
-                    plr.Backpack:FindFirstChild("BlackLeg") 
-             then
-                plr.Character.Humanoid:EquipTool(plr.Backpack.BlackLeg)
-            end
-        else
-            local sword, equip = GetSword()
-            if sword and not equip then
-                if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-                    game.Players.LocalPlayer.Character.Humanoid:EquipTool(sword)
-                end
-            end
-        end
-    end
-    function GetAllMobInShip(ship) 
-        local Mobs = {}
-        for k,v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do 
-            if v:FindFirstChild("assignedShip") and v:FindFirstChild("Humanoid") and v.Humanoid.Health>0 then 
-                if v:FindFirstChild("HumanoidRootPart") then 
-                    if v.assignedShip.Value==ship then 
-                        table.insert(Mobs,v)
-                    end
-                end
-            end
-        end
-        return Mobs
-    end
-    
-    function Kill(v,f) 
-        local tween=true
-        repeat
-            wait() 
-            EquipWpShip()
-            if v:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then 
-                TpE(v,function() 
-                    return tween
-                end) 
-                if v:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).magnitude<5 then 
-                    --game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.X, false,game)
-                    MucTieu.MucTieu = v.HumanoidRootPart
-                    Click()
-                    if Settings.ShipFarmMode=="Black Leg" then 
-                        if IsSkillUnlocked("Party Table Kick Course") then
-                            if data.Stamina.Value>40 then 
-                                game:GetService("ReplicatedStorage").Events.Skill:InvokeServer("Party Table Kick Course")
-                            end
-                        end
-                    end
-                    if Settings.ShipFarmMode=="Sword" then 
-                        if IsSkillUnlocked("Rapid Slashes") then
-                            if data.Stamina.Value>20 then 
-                                game:GetService("ReplicatedStorage").Events.Skill:InvokeServer("Rapid Slashes")
-                            end
-                        end
-                    end
-                    
-                end
-            end
-        until f(v) 
-        MucTieu.MucTieu =nil
-        tween=false
-    end
-    
-    plr.Backpack.ChildAdded:Connect(function(fruit) 
-        if fruit:FindFirstChild("FruitModel") then
-            spawn(function() 
-                if Settings.AutoStoreDF then 
-                    local s, DFBackpackOwn = pcall(game:GetService("MarketplaceService").UserOwnsGamePassAsync, game:GetService("MarketplaceService"), plr.UserId, 12776768)
-                    if (s and DFBackpackOwn)
-                    or string.find(data.Inventory.Inventory.Value, "Fruit Bag") then
-                        local v = fruit
-                        StoringDF=true
-                        local t = tick()
-                        
-                        repeat wait(1)
-                            plr.Character.Humanoid:EquipTool(v)
-                            wait(.5)
-                            if pcall(function() return plr.PlayerGui.storefruit.TextButton end) and plr.PlayerGui.storefruit.TextButton.Visible == true then
-                                FireButton(plr.PlayerGui.storefruit.TextButton)
-                            end
-                        until not v
-                        or not v.Parent
-                        or not Settings.AutoStoreDF or tick()-t>5
-                        StoringDF=false
-                    end
-                end
-            end)
-            if Settings.DFWebHook then 
-                if Settings.WebHookUrl then 
-                    local msg = {
-                        ["content"] = (Settings.MentionEveryone and "@everyone") or "",
-                        ["embeds"] = {{
-                            ["title"] = "Grand Piece Online",
-                            ["description"] = "Fruit Gotten",
-                            ["type"] = "rich",
-                            ["color"] = tonumber(47103),
-                            ["fields"] = {
-                                {
-                                    ["name"] = "Name",
-                                    ["value"] = "||" .. plr.Name .. "||",
-                                    ["inline"] = false
-                                },
-                                {
-                                    ["name"] = "Item",
-                                    ["value"] = fruit.Name,
-                                    ["inline"] = false
-                                }
-                            },
-                            ["footer"] = {
-                                ["icon_url"] = "https://media.discordapp.net/attachments/1115444244744781835/1154536363182542908/static.png?width=204&height=204",
-                                ["text"] = "Universe Hub (" .. os.date("%X") .. ")"
-                            }
-                        }}
-                    }
-                    local function SendWebHook()
-                        request({
-                            Url =Settings.WebHookUrl,
-                            Method = "POST",
-                            Headers = {
-                                ["Content-Type"] = "application/json"
-                            },
-                            Body = game:GetService("HttpService"):JSONEncode(msg)
-                        })
-                    end
-                    SendWebHook()
-                end
-            end
-        end
-    end)
-    
-    function GetMob(name,stud) 
-        for k,v in pairs(game.Workspace.NPCs:GetChildren()) do 
-            if v.Name==name and v:FindFirstChild("HumanoidRootPart") then 
-                if plr.Character:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).magnitude<stud then 
-                    return v
-                end
-            end
-        end
-    end
-    
-    function ShipGetNearestMobSM(mob)
-        local nr = nil
-        for k, v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do
-            if string.match(v.Name,mob) and v:FindFirstChild("assignedShip") then
-                if
-                    plr.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("HumanoidRootPart") and
-                        v:FindFirstChild("Humanoid") and
-                        v.Humanoid.Health > 0
-                 then
-                    if not nr then
-                        nr = v
-                    end
-                    if
-                        nr and nr:FindFirstChild("HumanoidRootPart") and
-                            (plr.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <
-                                (plr.Character.HumanoidRootPart.Position - nr.HumanoidRootPart.Position).magnitude
-                     then
-                        nr = v
-                    end
-                end
-            end
-        end
-        if nr then 
-            if
-            plr.Character:FindFirstChild("HumanoidRootPart") and nr:FindFirstChild("HumanoidRootPart") and
-            nr:FindFirstChild("Humanoid") and
-            nr.Humanoid.Health > 0 then 
-                    if (plr.Character.HumanoidRootPart.Position - nr.HumanoidRootPart.Position).magnitude <1000 then 
-                        return nr
-                    end
-                end
-        end
-        --return nr
-    end
-    
-    spawn(function() 
-        while wait(.5) do 
-            if Settings.ShipFarm then 
-                if Settings.ShipPos and Settings.ShipPos~=Vector3.new(0,0,0) and not ShipGetNearestMobSM("Captain") then
-                    if Settings.KillCannon then 
-                        if not ShipGetNearestMobSM("Cannoneer") then 
-                            Tp(CFrame.new(Settings.ShipPos)) 
-                        end
-                    else
-                        Tp(CFrame.new(Settings.ShipPos))
-                    end
-                    
-                end
-                if not game.Workspace.Ships:FindFirstChild(plr.Name.."Ship") then 
-                    game:GetService("ReplicatedStorage").Events.ShipEvents.Spawn:InvokeServer("true")
-                end
-                EquipWpShip()
-                KillCaMap()
-                local v = ShipGetNearestMobSM("Captain")
-                if v then 
-                    if v:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).magnitude<1000 then 
-                        if v.Name=="Marine Captain" or v.Name=="Pirate Captain" and Settings.ShipFarm and v:FindFirstChild("assignedShip") then
-                            local ship = v.assignedShip.Value
-                            if ship then 
-                                local function dk(v) 
-                                    return not v.Parent or not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health==0 or not Settings.ShipFarm
-                                end
-                                Kill(v,dk)
-                            end
-                        end
-                    end
-                else
-                    if Settings.KillCannon then 
-                        if Settings.ShipFarm then 
-                            local v=ShipGetNearestMobSM("Cannoneer")
-                            if v and v:FindFirstChild("HumanoidRootPart") then 
-                                local function dk(v) 
-                                    return not v.Parent or not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health==0 or not Settings.ShipFarm
-                                end
-                                Kill(v,dk)
-                            end
-                            
-                        end
-                    end
-                end
-            end
-            if not Settings.ShipFarm then 
-                AutoClick=false
-            end
-        end
-    end)
 
     local Tab2 = Window:CreatePage("Rifle Farm")
     local Section2 = Tab2:CreateSection("Farm")
@@ -1652,8 +1387,313 @@ end
 end)
 end)
 
+local Tab2 = Window:CreatePage("Ship Farm")
+local Section2 = Tab2:CreateSection("Ship Farm")
+Section2:CreateToggle("Ship Farm", {Toggled=Settings.ShipFarm,Description = false}, function(state)
+    Settings.ShipFarm = state
+    SetEN("Noclip", "ShipFarm", state)
+    SetEN("NoFallDame","ShipFarm",state)
+end)
+Section2:CreateDropdown("Ship Farm Method", {
+    List = {"Sword","Black Leg"},
+    Default =  Settings.ShipFarmMode
+}, function(item)
+    Settings.ShipFarmMode = item
+end)
+Section2:CreateToggle("Kill Cannoners", {Toggled=Settings.KillCannon,Description = false}, function(state)
+    Settings.KillCannon = state
+end)
+-- Section2:CreateToggle("Ignore Galleons", {Description = false}, function(state)
+--     Settings.IgnoreGalleon = state
+-- end)
+local function HieAttack()
+        pcall(function()
+            local ohString1 = "Ice Partisan"
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+            local playerPosition = humanoidRootPart.Position
+            local playerOrientation = humanoidRootPart.CFrame:pointToObjectSpace(playerPosition)
+            local newCF = CFrame.new(
+                playerPosition + Vector3.new(0, 6, 0),
+                playerPosition + playerOrientation * Vector3.new(0, 0, -1)
+            )
+            local ohTable2 = {
+                ["cf"] = newCF
+            }
+        game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)
+    end)
+end
+
+local toggleActive1 = false
+
+Section2:CreateToggle("Hie Auto Attack", {Description = "For Farming Marine!!!"}, function(active1)
+pcall(function()
+toggleActive1 = active1
+while toggleActive1 do
+    HieAttack()
+    task.wait(.3)
+end
+end)
+end)
+Section2:CreateButton("Set Ship Spawn Location", function(args)
+    Settings.ShipPos=game.Players.LocalPlayer.Character.HumanoidRootPart.Position--Vector3.new(6013.2841796875, -3.5988941192626953, -18909.974609375)--
+    UniverseHub:AddNoti("Notification", "Set Ship Farm Position Complete", 5)
+end)
+function TpE(e,f)
+    if e:FindFirstChild("HumanoidRootPart") then 
+        repeat wait() 
+        spawn(function() 
+            if e:FindFirstChild("HumanoidRootPart") then 
+                Tp(e.HumanoidRootPart.CFrame*CFrame.new(0, -0.75, 3))
+            end
+        end)
+        until not e:FindFirstChild("HumanoidRootPart") or not pcall(function() return game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame end) or (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-e.HumanoidRootPart.Position).magnitude<5 or not e.Parent or not f()
+    end
+end
+local function KillCaMap()
+    for i, v in ipairs(game.workspace.NPCs:GetChildren()) do
+        if plr.Character:FindFirstChild("HumanoidRootPart") and v.Name == "Shark" and v:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("Humanoid") and v.Humanoid.Health ~= 0 then
+            local magnitude = (v.HumanoidRootPart.Position - plr.Character.HumanoidRootPart.Position).magnitude
+            if magnitude < 10 then
+                Click()
+            end
+        end
+    end
+end
+function EquipWpShip() 
+    if StoringDF then return end
+    if Settings.ShipFarmMode == "Black Leg" then
+        if
+            game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") and
+                plr.Backpack:FindFirstChild("BlackLeg") 
+         then
+            plr.Character.Humanoid:EquipTool(plr.Backpack.BlackLeg)
+        end
+    else
+        local sword, equip = GetSword()
+        if sword and not equip then
+            if game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+                game.Players.LocalPlayer.Character.Humanoid:EquipTool(sword)
+            end
+        end
+    end
+end
+function GetAllMobInShip(ship) 
+    local Mobs = {}
+    for k,v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do 
+        if v:FindFirstChild("assignedShip") and v:FindFirstChild("Humanoid") and v.Humanoid.Health>0 then 
+            if v:FindFirstChild("HumanoidRootPart") then 
+                if v.assignedShip.Value==ship then 
+                    table.insert(Mobs,v)
+                end
+            end
+        end
+    end
+    return Mobs
+end
+
+function Kill(v,f) 
+    local tween=true
+    repeat
+        wait() 
+        EquipWpShip()
+        if v:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then 
+            TpE(v,function() 
+                return tween
+            end) 
+            if v:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).magnitude<5 then 
+                --game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.X, false,game)
+                MucTieu.MucTieu = v.HumanoidRootPart
+                Click()
+                if Settings.ShipFarmMode=="Black Leg" then 
+                    if IsSkillUnlocked("Party Table Kick Course") then
+                        if data.Stamina.Value>40 then 
+                            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer("Party Table Kick Course")
+                        end
+                    end
+                end
+                if Settings.ShipFarmMode=="Sword" then 
+                    if IsSkillUnlocked("Rapid Slashes") then
+                        if data.Stamina.Value>20 then 
+                            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer("Rapid Slashes")
+                        end
+                    end
+                end
+                
+            end
+        end
+    until f(v) 
+    MucTieu.MucTieu =nil
+    tween=false
+end
+
+plr.Backpack.ChildAdded:Connect(function(fruit) 
+    if fruit:FindFirstChild("FruitModel") then
+        spawn(function() 
+            if Settings.AutoStoreDF then 
+                local s, DFBackpackOwn = pcall(game:GetService("MarketplaceService").UserOwnsGamePassAsync, game:GetService("MarketplaceService"), plr.UserId, 12776768)
+                if (s and DFBackpackOwn)
+                or string.find(data.Inventory.Inventory.Value, "Fruit Bag") then
+                    local v = fruit
+                    StoringDF=true
+                    local t = tick()
+                    
+                    repeat wait(1)
+                        plr.Character.Humanoid:EquipTool(v)
+                        wait(.5)
+                        if pcall(function() return plr.PlayerGui.storefruit.TextButton end) and plr.PlayerGui.storefruit.TextButton.Visible == true then
+                            FireButton(plr.PlayerGui.storefruit.TextButton)
+                        end
+                    until not v
+                    or not v.Parent
+                    or not Settings.AutoStoreDF or tick()-t>5
+                    StoringDF=false
+                end
+            end
+        end)
+        if Settings.DFWebHook then 
+            if Settings.WebHookUrl then 
+                local msg = {
+                    ["content"] = (Settings.MentionEveryone and "@everyone") or "",
+                    ["embeds"] = {{
+                        ["title"] = "Grand Piece Online",
+                        ["description"] = "Fruit Gotten",
+                        ["type"] = "rich",
+                        ["color"] = tonumber(47103),
+                        ["fields"] = {
+                            {
+                                ["name"] = "Name",
+                                ["value"] = "||" .. plr.Name .. "||",
+                                ["inline"] = false
+                            },
+                            {
+                                ["name"] = "Item",
+                                ["value"] = fruit.Name,
+                                ["inline"] = false
+                            }
+                        },
+                        ["footer"] = {
+                            ["icon_url"] = "https://media.discordapp.net/attachments/1115444244744781835/1154536363182542908/static.png?width=204&height=204",
+                            ["text"] = "Universe Hub (" .. os.date("%X") .. ")"
+                        }
+                    }}
+                }
+                local function SendWebHook()
+                    request({
+                        Url =Settings.WebHookUrl,
+                        Method = "POST",
+                        Headers = {
+                            ["Content-Type"] = "application/json"
+                        },
+                        Body = game:GetService("HttpService"):JSONEncode(msg)
+                    })
+                end
+                SendWebHook()
+            end
+        end
+    end
+end)
+
+function GetMob(name,stud) 
+    for k,v in pairs(game.Workspace.NPCs:GetChildren()) do 
+        if v.Name==name and v:FindFirstChild("HumanoidRootPart") then 
+            if plr.Character:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).magnitude<stud then 
+                return v
+            end
+        end
+    end
+end
+
+function ShipGetNearestMobSM(mob)
+    local nr = nil
+    for k, v in pairs(game:GetService("Workspace").NPCs:GetChildren()) do
+        if string.match(v.Name,mob) and v:FindFirstChild("assignedShip") then
+            if
+                plr.Character:FindFirstChild("HumanoidRootPart") and v:FindFirstChild("HumanoidRootPart") and
+                    v:FindFirstChild("Humanoid") and
+                    v.Humanoid.Health > 0
+             then
+                if not nr then
+                    nr = v
+                end
+                if
+                    nr and nr:FindFirstChild("HumanoidRootPart") and
+                        (plr.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).magnitude <
+                            (plr.Character.HumanoidRootPart.Position - nr.HumanoidRootPart.Position).magnitude
+                 then
+                    nr = v
+                end
+            end
+        end
+    end
+    if nr then 
+        if
+        plr.Character:FindFirstChild("HumanoidRootPart") and nr:FindFirstChild("HumanoidRootPart") and
+        nr:FindFirstChild("Humanoid") and
+        nr.Humanoid.Health > 0 then 
+                if (plr.Character.HumanoidRootPart.Position - nr.HumanoidRootPart.Position).magnitude <1000 then 
+                    return nr
+                end
+            end
+    end
+    --return nr
+end
+
+spawn(function() 
+    while wait(.5) do 
+        if Settings.ShipFarm then 
+            if Settings.ShipPos and Settings.ShipPos~=Vector3.new(0,0,0) and not ShipGetNearestMobSM("Captain") then
+                if Settings.KillCannon then 
+                    if not ShipGetNearestMobSM("Cannoneer") then 
+                        Tp(CFrame.new(Settings.ShipPos)) 
+                    end
+                else
+                    Tp(CFrame.new(Settings.ShipPos))
+                end
+                
+            end
+            if not game.Workspace.Ships:FindFirstChild(plr.Name.."Ship") then 
+                game:GetService("ReplicatedStorage").Events.ShipEvents.Spawn:InvokeServer("true")
+            end
+            EquipWpShip()
+            KillCaMap()
+            local v = ShipGetNearestMobSM("Captain")
+            if v then 
+                if v:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("HumanoidRootPart") and (game.Players.LocalPlayer.Character.HumanoidRootPart.Position-v.HumanoidRootPart.Position).magnitude<1000 then 
+                    if v.Name=="Marine Captain" or v.Name=="Pirate Captain" and Settings.ShipFarm and v:FindFirstChild("assignedShip") then
+                        local ship = v.assignedShip.Value
+                        if ship then 
+                            local function dk(v) 
+                                return not v.Parent or not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health==0 or not Settings.ShipFarm
+                            end
+                            Kill(v,dk)
+                        end
+                    end
+                end
+            else
+                if Settings.KillCannon then 
+                    if Settings.ShipFarm then 
+                        local v=ShipGetNearestMobSM("Cannoneer")
+                        if v and v:FindFirstChild("HumanoidRootPart") then 
+                            local function dk(v) 
+                                return not v.Parent or not v:FindFirstChild("HumanoidRootPart") or not v:FindFirstChild("Humanoid") or v.Humanoid.Health==0 or not Settings.ShipFarm
+                            end
+                            Kill(v,dk)
+                        end
+                        
+                    end
+                end
+            end
+        end
+        if not Settings.ShipFarm then 
+            AutoClick=false
+        end
+    end
+end)
+
 local Tab2 = Window:CreatePage("Kraken Farm")
-local Section2 = Tab2:CreateSection("Main")
+local Section2 = Tab2:CreateSection("Soon")
 
     
     local Tab2 = Window:CreatePage("Auto Stats")
@@ -1934,7 +1974,7 @@ local Section2 = Tab2:CreateSection("Main")
     Section2:CreateTextbox("Private Server Code", "(Leave if you want rejoin to normal server)", function(args)
         Settings.PSCode=args
     end,Settings.PSCode)
-    local Section2 = Tab2:CreateSection("Local Player")
+    local Section2 = Tab2:CreateSection("Misc")
     Section2:CreateToggle("No Fall Damage", {Toggled=Settings.NoFallDame,Description = "Make you get no damage when fall"}, function(state)
         Settings.NoFallDame = state
         SetEN("NoFallDame", "Setting", state)
@@ -1953,11 +1993,11 @@ local Section2 = Tab2:CreateSection("Main")
         end
     end
     
-    Section2:CreateToggle("No Clip", {Description = "Make you no clip!!!"}, function(ToggleState)
+    Section2:CreateToggle("No Clip", {Description = "Make you noclips"}, function(ToggleState)
     NoclipEnabled = ToggleState
     while NoclipEnabled do
         NoclipFunction()
-        task.wait() -- Substituí task.wait() por wait()
+        task.wait()
     end
     for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
         if part:IsA("BasePart") and part.CanCollide == false then
@@ -1966,7 +2006,7 @@ local Section2 = Tab2:CreateSection("Main")
     end
     end)
     
-    Section2:CreateToggle("Anti Fall", {Description = "Make you Stop On AIR!"}, function(ToggleState)
+    Section2:CreateToggle("Anti Fall", {Description = "Make you Stop On Air!"}, function(ToggleState)
     if ToggleState then
         antifall = Instance.new("BodyVelocity", game.Players.LocalPlayer.Character.HumanoidRootPart)
         antifall.Velocity = Vector3.new(0, 0, 0)
@@ -1977,8 +2017,118 @@ local Section2 = Tab2:CreateSection("Main")
         end
     end
     end)
-    
-    Section2:CreateButton("Fruit Swim", function()
+
+local toggle = Section2:CreateToggle("Enable SkyWalk", {Description = "¡Vuela libremente!!!"}, function(isEnabled)
+    pcall(function()
+        local player = game.Players.LocalPlayer
+        local stats = game:GetService("ReplicatedStorage")["Stats"..player.Name].Skills
+        stats.skyWalk.Value = isEnabled
+    end)
+end)
+
+local backupData = {}
+local function restoreOriginalProperties()
+    for v, properties in pairs(backupData) do
+        v.HumanoidRootPart.CanCollide = properties.CanCollide
+        v.HumanoidRootPart.Size = properties.Size
+        v.HumanoidRootPart.Material = properties.Material
+        v.HumanoidRootPart.BrickColor = properties.BrickColor
+        v.HumanoidRootPart.Transparency = properties.Transparency
+    end
+end
+local function updateHitboxes(extend)
+    for v, properties in pairs(backupData) do
+        v.HumanoidRootPart.CanCollide = extend
+        if extend then
+            v.HumanoidRootPart.Size = Vector3.new(20, 20, 20)
+            v.HumanoidRootPart.Material = "Neon"
+            v.HumanoidRootPart.BrickColor = BrickColor.new("Really blue")
+            v.HumanoidRootPart.Transparency = 0.9
+        else
+            v.HumanoidRootPart.Size = properties.Size
+            v.HumanoidRootPart.Material = properties.Material
+            v.HumanoidRootPart.BrickColor = properties.BrickColor
+            v.HumanoidRootPart.Transparency = properties.Transparency
+        end
+    end
+end
+local toggleEnabled = false
+Section2:CreateToggle("HitBox Extender NPC", {Description = "Enables or disables the hitbox increase of NPCs."}, function(enabled)
+    toggleEnabled = enabled
+    if toggleEnabled then
+        backupData = {}
+        for i, v in pairs(game:GetService("Workspace")["NPCs"]:GetDescendants()) do
+            if v:FindFirstChild("Humanoid") and v:FindFirstChild("Head") and v.Humanoid.Health > 0 then
+                backupData[v] = {
+                    CanCollide = v.Head.CanCollide,
+                    Size = v.Head.Size,
+                    Material = v.Head.Material,
+                    BrickColor = v.Head.BrickColor,
+                    Transparency = v.Head.Transparency
+                }
+            end
+        end
+        updateHitboxes(true)
+    else
+        restoreOriginalProperties()
+    end
+end)
+
+local backupData1 = {}
+local function restoreOriginalProperties1()
+    for v, properties in pairs(backupData) do
+        v.HumanoidRootPart.CanCollide = properties.CanCollide
+        v.HumanoidRootPart.Size = properties.Size
+        v.HumanoidRootPart.Material = properties.Material
+        v.HumanoidRootPart.BrickColor = properties.BrickColor
+        v.HumanoidRootPart.Transparency = properties.Transparency
+    end
+end
+local function updateHitboxes1(extend)
+    for v, properties in pairs(backupData) do
+        if v == game.Players.LocalPlayer.Character then
+            continue
+        end
+
+        v.HumanoidRootPart.CanCollide = extend
+        if extend then
+            v.HumanoidRootPart.Size = Vector3.new(20, 20, 20)
+            v.HumanoidRootPart.Material = "Neon"
+            v.HumanoidRootPart.BrickColor = BrickColor.new("Really blue")
+            v.HumanoidRootPart.Transparency = 0.9
+        else
+            v.HumanoidRootPart.Size = properties.Size
+            v.HumanoidRootPart.Material = properties.Material
+            v.HumanoidRootPart.BrickColor = properties.BrickColor
+            v.HumanoidRootPart.Transparency = properties.Transparency
+        end
+    end
+end
+local toggleEnabled = false
+Section2:CreateToggle("HitBox Extender Players", {Description = "Enables or disables the hitbox increase of Players."}, function(enabled)
+    toggleEnabled = enabled
+    if toggleEnabled then
+        backupData = {}
+        for i, v in pairs(game:GetService("Workspace")["PlayerCharacters"]:GetDescendants()) do
+            if v:FindFirstChild("Humanoid") and v:FindFirstChild("HumanoidRootPart") and v.Humanoid.Health > 0 then
+                backupData[v] = {
+                    CanCollide = v.HumanoidRootPart.CanCollide,
+                    Size = v.HumanoidRootPart.Size,
+                    Material = v.HumanoidRootPart.Material,
+                    BrickColor = v.HumanoidRootPart.BrickColor,
+                    Transparency = v.HumanoidRootPart.Transparency
+                }
+            end
+        end
+        updateHitboxes1(true)
+    else
+        restoreOriginalProperties1()
+    end
+end)
+
+local coatBubbleEnabled = false
+
+local function criarCoatBubble()
     pcall(function()
         local coatBubble = Instance.new('Part', game.Workspace.PlayerCharacters[plr.Name])
         coatBubble.Name = [[coatBubble]]
@@ -2003,16 +2153,61 @@ local Section2 = Tab2:CreateSection("Main")
         coatBubble.Size = Vector3.new(1, 1, 1)
         coatBubble.TopSurface = Enum.SurfaceType.Smooth
         coatBubble.Transparency = 0.5
-        end)
     end)
+end
+
+local function destruirCoatBubble()
+    local coatBubble = game.Workspace.PlayerCharacters[plr.Name]:FindFirstChild("coatBubble")
+    if coatBubble then
+        coatBubble:Destroy()
+    end
+end
+
+Section2:CreateToggle("Fruit Swim", {Description = "U can Swim"}, function(enabled)
+    coatBubbleEnabled = enabled
+
+    if enabled then
+        criarCoatBubble()
+    else
+        destruirCoatBubble()
+    end
+end)
+
+
+local Section2 = Tab2:CreateSection("World Settings")
     
-    
-    local Section2 = Tab2:CreateSection("ESP")
-    
-    Section2:CreateToggle("Island ESP", {Toggled=Settings.IslandE,Description = false}, function(state)
+
+Section2:CreateToggle("Island ESP", {Toggled=Settings.IslandE,Description = false}, function(state)
         Settings.IslandE=state
-    end)
-    
+end)
+local Section2 = Tab2:CreateSection("Blur")
+
+Section2:CreateToggle("Blur", {Description = "Yessir"}, function(V)
+workspace.Camera.Blur.Enabled = V
+end)
+
+workspace.Camera.Blur.Enabled = true
+
+
+Section2:CreateSlider("Blur Ammount", {Min = 0, Max = 100, DefaultValue = 0}, function(Value)
+workspace.Camera.Blur.Size = Value
+end)
+
+local Section2 = Tab2:CreateSection("World Color")
+
+
+Section2:CreateToggle("World Color Correction", {Description = "Yessir"}, function(V)
+workspace.Camera.ColorCorrection.Enabled = V
+end)
+workspace.Camera.ColorCorrection.Enabled = true
+
+Section2:CreateSlider("World Saturation", {Min = 0, Max = 100, DefaultValue = 0}, function(Value)
+workspace.Camera.ColorCorrection.Saturation = Value
+end)
+Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), function (WorldColor)
+    workspace.Camera.ColorCorrection.TintColor = WorldColor
+ end)
+
     local Tab2 = Window:CreatePage("Web Hook")
     local Section2 = Tab2:CreateSection("Main")
     
@@ -2078,6 +2273,7 @@ local Section2 = Tab2:CreateSection("Main")
     end)
     
     local Tab2 = Window:CreatePage("Teleports Sea 1")
+    
     
         local Section2 = Tab2:CreateSection("Normal Bypass (Active Bypass Fly)")
     
@@ -3129,537 +3325,6 @@ local Section2 = Tab2:CreateSection("Main")
     game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
     end)
     end)
-    
-    
-    local Tab2 = Window:CreatePage("Fruit Things")
-    
-    local Section2 = Tab2:CreateSection("Gomu-Gomu")
-    
-    local function GomuBloon()
-    pcall(function()
-    local ohString1 = "Gomu-Gomu no Balloon"
-    local ohTable2 = {
-        ["cf"] = CFrame.new()
-    }
-    game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)
-    end)
-    end
-    
-    Section2:CreateToggle("Gomu -50% Damage", {Description = ""}, function(GomuBallon)
-                pcall(function()
-                toggleActive = GomuBallon
-                while toggleActive do
-                GomuBloon()
-                task.wait()
-            end
-        end)
-    end)
-    
-    local function GomuInsta()
-            pcall(function()
-                local ohString1 = "Gomu-Gomu no Gatling"
-                local ohTable2 = {
-                    ["cf"] = CFrame.new(9505.12891, 16.1434498, -7039.53906, 0.523286402, -0.000454191875, -0.852156758, 0.0104271099, 0.999928415, 0.00587005354, 0.852093101, -0.0119572515, 0.523253679)
-                }
-                
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)
-        end)
-    end
-    
-    Section2:CreateToggle("Gomu Auto Gatling (Instant Gatling)", {Description = ""}, function(GomuGatling)
-                pcall(function()
-                toggleActive = GomuGatling
-                while toggleActive do
-                GomuInsta()
-                task.wait()
-            end
-        end)
-    end)
-    
-    local function GomuPistolAim()
-        pcall(function()
-            local ohString1 = "Gomu-Gomu no Pistol"
-            local player = game.Players.LocalPlayer
-            local playerCharacter = game.Workspace.PlayerCharacters[player.Name]
-            local humanoidRootPart = playerCharacter:WaitForChild("HumanoidRootPart")
-            local function getDistance(point1, point2)
-                return (point1 - point2).Magnitude
-            end
-            local closestPlayer = nil
-            local closestDistance = 125
-            for _, otherPlayer in ipairs(game.Players:GetPlayers()) do
-                if otherPlayer ~= player then
-                    local otherCharacter = game.Workspace.PlayerCharacters[otherPlayer.Name]
-                    local otherHumanoidRootPart = otherCharacter:FindFirstChild("HumanoidRootPart")
-                    if otherHumanoidRootPart then
-                        local distance = getDistance(humanoidRootPart.Position, otherHumanoidRootPart.Position)
-                        if distance <= closestDistance then
-                            closestPlayer = otherPlayer
-                            closestDistance = distance
-                        end
-                    end
-                end
-            end
-            if closestPlayer then
-                local ohTable2 = {
-                    ["targetCF"] = humanoidRootPart.CFrame,
-                    ["armCF"] = humanoidRootPart.CFrame,
-                    ["handCF"] = humanoidRootPart.CFrame,
-                    ["target"] = game.Workspace.PlayerCharacters[closestPlayer.Name],
-                    ["cf"] = humanoidRootPart.CFrame
-                }
-        
-                game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)
-            end
-        end)    
-        end
-    
-        Section2:CreateToggle("Gomu Auto Attack Closest Player (Instant Pistol)", {Description = ""}, function(GomuPistol)
-            pcall(function()
-            toggleActive = GomuPistol
-            while toggleActive do
-                GomuPistolAim()
-                task.wait()
-            end
-        end)
-    end)
-    
-    local Section2 = Tab2:CreateSection("Mera-Mera")
-    
-    local function MeraHikenS()
-        pcall(function()
-            local args = {
-                [1] = "Hiken"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-        end)
-    end
-    
-    Section2:CreateToggle("Mera Hiken Stack", {Description = ""}, function(MeraHikenStack)
-        pcall(function()
-        toggleActive = MeraHikenStack
-        while toggleActive do
-            MeraHikenS()
-            task.wait()
-        end
-    end)
-    end)
-    
-    local function MeraHikenR()
-        pcall(function()
-            local players = game:GetService("Players"):GetPlayers()
-            local remotePath = "ServerScriptService.Skills.Skills.SkillContainer.Mera-Mera.Hiken"
-            
-            for _, player in ipairs(players) do
-                local playerRemote = game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|" .. remotePath)
-                if playerRemote then
-                    playerRemote:InvokeServer()
-                else
-                    warn("Remote não encontrado para o jogador: " .. player.Name)
-                end
-            end
-        end)
-        
-    end
-    
-    Section2:CreateToggle("Mera Hiken Release", {Description = ""}, function(MeraHikenRelease)
-        pcall(function()
-            toggleActive = MeraHikenRelease
-            while toggleActive do
-                MeraHikenR()
-                task.wait()
-            end
-        end)
-    end)
-    
-    local function MeraPillarS()
-        pcall(function()
-    
-    local args = {
-        [1] = "Flame Pillar"
-    }
-    
-    game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-            end)
-    end
-    
-    Section2:CreateToggle("Mera Pillar Stack", {Description = ""}, function(MeraPillarStack)
-        pcall(function()
-        toggleActive = MeraPillarStack
-        while toggleActive do
-            MeraPillarS()
-            task.wait()
-        end
-    end)
-    end)
-    
-    local function MeraPillarR()
-        pcall(function()
-            local players = game:GetService("Players"):GetPlayers()
-            local remotePath = "ServerScriptService.Skills.Skills.SkillContainer.Mera-Mera.Flame Pillar"
-            
-            for _, player in ipairs(players) do
-                local playerName = player.Name
-                local playerRemote = game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(playerName .. "|" .. remotePath)
-                if playerRemote then
-                    playerRemote:InvokeServer()
-                else
-                    warn("Remote não encontrado para o jogador: " .. playerName)
-                end
-            end
-        end)
-        
-    end
-    
-    Section2:CreateToggle("Mera Pillar Release", {Description = ""}, function(MeraPillarRelease)
-        pcall(function()
-            toggleActive = MeraPillarRelease
-            while toggleActive do
-                MeraPillarR()
-                task.wait()
-            end
-        end)
-    end)
-    
-    local Section2 = Tab2:CreateSection("Pika-Pika")
-    
-    local function PikaLungeS()
-        pcall(function()
-            local ohString1 = "Light Lunge"
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1)
-            end)
-        end
-        
-    Section2:CreateToggle("Pika Lunge Stack", {Description = ""}, function(PikaLunge)
-                    pcall(function()
-                    toggleActive = PikaLunge
-                    while toggleActive do
-                        PikaLungeS()
-                task.wait()
-            end
-        end)
-    end)
-    
-    local function PikaLungeAim()
-        pcall(function()
-            local Players = game:GetService("Players")
-            local ReplicatedStorage = game:GetService("ReplicatedStorage")
-    
-            local function encontrarJogadorMaisProximo()
-                local players = Players:GetPlayers()
-                local currentPlayer = Players.LocalPlayer
-                local closestPlayer = nil
-                local shortestDistance = 100
-    
-                for _, player in ipairs(players) do
-                    if player ~= currentPlayer then
-                        local character = player.Character
-                        if character and character:FindFirstChild("Humanoid") then
-                            local distance = (currentPlayer.Character.HumanoidRootPart.Position - character.HumanoidRootPart.Position).Magnitude
-                            if distance < shortestDistance then
-                                shortestDistance = distance
-                                closestPlayer = player
-                            end
-                        end
-                    end
-                end
-    
-                return closestPlayer
-            end
-    
-            local players = Players:GetPlayers()
-    
-            for _, plr in ipairs(players) do
-                local closestPlayer = encontrarJogadorMaisProximo()
-    
-                if closestPlayer then
-                    local args = {
-                        [1] = CFrame.new(closestPlayer.Character.HumanoidRootPart.Position) * CFrame.Angles(-3.102909803390503, -0.431573748588562, -3.1254048347473145)
-                    }
-    
-                    local skillName = plr.name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Lunge"
-    
-                    ReplicatedStorage.PlayerRemotes:FindFirstChild(skillName):FireServer(unpack(args))            
-                end
-            end
-        end)    
-    end
-    
-    
-        Section2:CreateToggle("Pika Auto Attack Closest Player (Instant Pika-Lunge)", {Description = ""}, function(PikaLunge)
-            pcall(function()
-            toggleActive = PikaLunge
-            while toggleActive do
-                PikaLungeAim()
-                task.wait(0.5)
-            end
-        end)
-    end)
-
-
-    local function PikaKickS()
-        pcall(function()
-            local args = {
-                [1] = "Light Kick"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-            task.wait()
-            end)
-        end
-        
-    Section2:CreateToggle("Pika Kick Stack", {Description = ""}, function(PikaKickStack)
-                    pcall(function()
-                    toggleActive = PikaKickStack
-                    while toggleActive do
-                        PikaKickS()
-                task.wait()
-            end
-        end)
-    end)
-
-    local function PikaKickR()
-        pcall(function()
-            local skillFolder = game:GetService("ReplicatedStorage").PlayerRemotes
-            local player = game.Players.LocalPlayer
-            local humanoidRootPart = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-        
-            if humanoidRootPart then
-                local position = humanoidRootPart.Position
-        
-                for _, skillItem in ipairs(skillFolder:GetChildren()) do
-                    pcall(function()
-                        local args = {
-                            [1] = position,
-                            [2] = CFrame.new(position + Vector3.new(0, 5, 0)) * CFrame.Angles(-3.002415418624878, -0.557424008846283, 2.430689811706543)
-                        }
-        
-                        skillItem:FireServer(unpack(args))
-                    end)
-                end
-            else
-                warn("HumanoidRootPart not found!")
-            end
-        end) 
-    end
-    
-    Section2:CreateToggle("Pika Kick Release", {Description = ""}, function(PikaKickRelease)
-        pcall(function()
-            toggleActive = PikaKickRelease
-            while toggleActive do
-                PikaKickR()
-                task.wait(0.5)
-            end
-        end)
-    end)
-
-    local function InfRay()
-        pcall(function()
-            local args = {
-            [1] = "Light Ray",
-            [2] = {
-                ["pos"] = Vector3.new(9475.990234375, 12.788227081298828, -7034.09814453125)
-            }
-        }
-        
-        game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-        end)
-    end
-    
-    Section2:CreateToggle("Pika Infinite LightRay", {Description = ""}, function(InfiniteRay)
-        pcall(function()
-            toggleActive = InfiniteRay
-            while toggleActive do
-                InfRay()
-                task.wait(10)
-            end
-        end)
-    end)
-
-    local Section2 = Tab2:CreateSection("Paw-Paw")
-
-    local function PawCannonS()
-        pcall(function()
-            local args = {
-                [1] = "Paw Cannon",
-                [2] = CFrame.new(-0, 0, -0) * CFrame.Angles(-0.0215043593198061, 0.4616168439388275, 0.015874940901994705)
-            }
-            
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-        end)
-    end
-    
-    Section2:CreateToggle("Paw Cannon Stack", {Description = ""}, function(PawCannonStack)
-        pcall(function()
-            toggleActive = PawCannonStack
-            while toggleActive do
-                PawCannonS()
-                task.wait()
-            end
-        end)
-    end)
-
-    local function PawCannonR()
-        pcall(function()
-            local player = game.Players.LocalPlayer
-            local playerName = player.Name
-            local humanoidRootPart = player.Character.HumanoidRootPart
-            local position = humanoidRootPart.Position + Vector3.new(0, 5, 0)
-            local remotes = game:GetService("ReplicatedStorage").PlayerRemotes
-            local eventName = playerName .. "|ServerScriptService.Skills.Skills.SkillContainer.Paw-Paw.Paw Cannon"
-            local args = {
-                [1] = CFrame.new(position) * CFrame.Angles(0.0768343061208725, -0.13681165874004364, 0.010459227487444878)
-            }
-            remotes:FindFirstChild(eventName):FireServer(unpack(args))
-        end)            
-    end
-    
-    Section2:CreateToggle("Paw Cannon Release", {Description = ""}, function(PawCannonRelease)
-        pcall(function()
-            toggleActive = PawCannonRelease
-            while toggleActive do
-                PawCannonR()
-                task.wait()
-            end
-        end)
-    end)
-
-    local function PawBombS()
-        pcall(function()
-            local args = {
-                [1] = "Paw Bomb",
-                [2] = CFrame.new(0, 0, 0) * CFrame.Angles(-1.2786227464675903, -0.8662163615226746, -1.19479238986969)
-            }
-            
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-        end)
-    end
-    
-    Section2:CreateToggle("Paw Bomb Stack", {Description = ""}, function(PawBombStack)
-        pcall(function()
-            toggleActive = PawBombStack
-            while toggleActive do
-                PawBombS()
-                task.wait()
-            end
-        end)
-    end)
-
-    local function PawBombR()
-        pcall(function()
-            local player = game.Players.LocalPlayer
-            local playerName = player.Name
-            local humanoidRootPart = player.Character.HumanoidRootPart
-            local position = humanoidRootPart.Position + Vector3.new(0, 5, 0)
-            local remotes = game:GetService("ReplicatedStorage").PlayerRemotes
-            local eventName = playerName .. "|ServerScriptService.Skills.Skills.SkillContainer.Paw-Paw.Paw Bomb"
-            local args = {
-                [1] = CFrame.new(position) * CFrame.Angles(0.0768343061208725, -0.13681165874004364, 0.010459227487444878)
-            }
-            remotes:FindFirstChild(eventName):FireServer(unpack(args))
-        end)            
-    end
-    
-    Section2:CreateToggle("Paw Bomb Release", {Description = ""}, function(PawBombRelease)
-        pcall(function()
-            toggleActive = PawBombRelease
-            while toggleActive do
-                PawBombR()
-                task.wait()
-            end
-        end)
-    end)
-
-    local Section2 = Tab2:CreateSection("Yuki-Yuki")
-
-    local function YukiSnowGustS()
-            pcall(function()
-                local args = {
-                    [1] = "Snow Gust"
-                }
-                game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-            end)
-        end
-    
-    Section2:CreateToggle("Yuki Snow Gust Stack", {Description = ""}, function(YukiGustStack)
-        pcall(function()
-            toggleActive = YukiGustStack
-            while toggleActive do
-                YukiSnowGustS()
-                task.wait()
-            end
-        end)
-    end)
-
-    local function YukiSnowGustR()
-        pcall(function()
-            local player = game.Players.LocalPlayer
-            local playerName = player.Name
-            local humanoidRootPart = player.Character.HumanoidRootPart
-            local position = humanoidRootPart.Position + Vector3.new(0, 5, 0)
-            local remotes = game:GetService("ReplicatedStorage").PlayerRemotes
-            local eventName = playerName .. "|ServerScriptService.Skills.Skills.SkillContainer.Yuki-Yuki.Snow Gust"
-            local args = {
-                [1] = CFrame.new(position) * CFrame.Angles(0, -0, 0)
-            }
-            remotes:FindFirstChild(eventName):FireServer(unpack(args))
-        end)
-    end
-
-Section2:CreateToggle("Yuki Snow Gust Release", {Description = ""}, function(YukiGustRelease)
-    pcall(function()
-        toggleActive = YukiGustRelease
-        while toggleActive do
-            YukiSnowGustR()
-            task.wait()
-        end
-    end)
-end)
-
-local function YukiSnowStormStack()
-    pcall(function()
-        local args = {
-            [1] = "Snow Storm"
-        }
-        game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-    end)
-end
-
-local function YukiSnowStormStop()
-    pcall(function()
-        local player = game.Players.LocalPlayer
-        local playerName = player.Name
-        local humanoidRootPart = player.Character.HumanoidRootPart
-        local position = humanoidRootPart.Position + Vector3.new(0, 5, 0)
-        local remotes = game:GetService("ReplicatedStorage").PlayerRemotes
-        local eventName = playerName .. "|ServerScriptService.Skills.Skills.SkillContainer.Yuki-Yuki.Snow Storm"
-        local args = {
-            [1] = CFrame.new(position) * CFrame.Angles(0.0768343061208725, -0.13681165874004364, 0.010459227487444878)
-        }
-        remotes:FindFirstChild(eventName):FireServer(unpack(args))
-    end)
-end
-
-local isYukiSnowStormActive = false
-
-local function StartYukiSnowStormLoop()
-    pcall(function()
-    while isYukiSnowStormActive do
-        YukiSnowStormStack()
-        task.wait()
-    end
-end)
-end
-
-Section2:CreateToggle("Infinite Yuki Snow Storm", {Description = ""}, function(toggleState)
-    isYukiSnowStormActive = toggleState
-    pcall(function()
-    if isYukiSnowStormActive then
-        StartYukiSnowStormLoop()
-    else
-        YukiSnowStormStop()
-    end
-end)
-end)
 
     local Tab2 = Window:CreatePage("Settings")
     local Section2 = Tab2:CreateSection("Main")
