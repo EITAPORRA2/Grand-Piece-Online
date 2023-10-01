@@ -649,7 +649,7 @@ local function PikaLungeS()
         end)
     end
     
-    MeraMera:AddToggle('Pika Lunge Stack', {
+    PikaPika:AddToggle('Pika Lunge Stack', {
         Text = 'Pika Lunge Stack',
         Callback = function(PikaLunge)
                 pcall(function()
