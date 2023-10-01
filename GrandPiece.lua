@@ -633,6 +633,18 @@ AntiDetect()
         )
     
     end
+    spawn(function() 
+        while wait() do 
+            if plr.Character:FindFirstChild("Humanoid") then 
+                if plr.Character.Humanoid.Sit then 
+                    StopFloat=true
+                    wait(.1)
+                    plr.Character.Humanoid.Sit=false
+                    StopFloat=false
+                end
+            end
+        end
+    end)
     function y0(vc) 
         return Vector3.new(vc.X,0,vc.Z)
     end
@@ -988,141 +1000,6 @@ AntiDetect()
     
     local Tab2 = Window:CreatePage("Farm")
     local Section2 = Tab2:CreateSection("Main Farm")
-    
-    local executor = identifyexecutor()
-    
-    if (executor == "Synapse X" or executor == "Krnl") and secure_call then
-    else
-        UniverseHub:AddNoti("Warning", "Your Executor Is Not Supported, Our Script's might not working Fully", 5)
-    end
-    local lf = Section2:CreateToggle("Level Farm", {Toggled=Settings.Farm,Description = "Will farm at Fishman Island (Fastest way)"}, function(state)
-        Settings.Farm = state
-        SetEN("Noclip", "Farm", state)
-        SetEN("NoFallDame","Farm",state)
-    end)
-    -- local lf = Section2:CreateToggle("Legit Farm", {Toggled=Settings.Legit,Description = "Legit Farm"}, function(state)
-    --     Settings.Legit = state
-    -- end)
-    
-    local olf = Section2:CreateToggle("1 Click Auto Farm", {Toggled=Settings.OneClick,Description = "Will auto farm beli -> Buy weapons then start level farm"}, function(state)
-        SetEN("Noclip", "OneClick", state)
-        SetEN("NoFallDame","OneClick",state)
-        Settings.OneClick = state
-    end)
-    Section2:CreateToggle("Auto Buso Quest", {Toggled=Settings.AutoBusoQuest,Description = "Must enable with level farm"}, function(state)
-        Settings.AutoBusoQuest=state
-    end)
-    Section2:CreateDropdown("Level Farm Method", {
-        List = {"Sword","Black Leg"},
-        Default = Settings.FarmMode
-    }, function(item)
-        Settings.FarmMode = item
-    end)
-    function IsAdvanceMode(k) 
-        if k=="1-575 at Fishman" then return false else return true end
-    end
-    Section2:CreateDropdown("Level Farm Path", {
-        List = {"1-575 at Fishman","1-160 at Fishman, 160-190 at gravito fort, 190-575 at Fishman"},
-        Default = Settings.FarmPath or "1-575 at Fishman"
-    }, function(item)
-        Settings.FarmPath = item
-    end)
-    
-    local Section2 = Tab2:CreateSection("Misc Farm")
-    
-    local AFB= Section2:CreateToggle("Auto Farm Beli (For Begginer Only)", {Toggled=Settings.Chest,Description = "Auto Farm Chest"}, function(state)
-        Settings.Chest = state
-        SetEN("Noclip", "Chest", state)
-        SetEN("NoFallDame","Chest",state)
-    end)
-    
-    spawn(function() 
-        while wait() do 
-            local mode
-            local price
-            local GetItem
-            local BuyItem
-            local Pos
-            if Settings.FarmMode=="Sword" then
-                 mode="Katana" 
-                 price=1000 
-                 GetItem = GetSword 
-                 BuyItem=BuyKatana 
-                 Pos = SwordPos 
-            end
-            if Settings.FarmMode=="Rifle" then
-                mode="Rifle" 
-                price=300 
-                GetItem=GetRifle 
-                BuyItem=function()  
-                    fireclickdetector(game:GetService("Workspace").BuyableItems.Rifle.ShopPart.ClickDetector) 
-                end 
-                Pos = CFrame.new(999.6433715820312, 9.092554092407227, 1133.33740234375) 
-            end
-           
-            if Settings.OneClick and mode then 
-                lf.SetValue(false)
-                if not GetItem() and not CheckInven(mode) then
-                    if data.Stats.Peli.Value < price then 
-                        AFB.SetValue(true)
-                    else
-                        AFB.SetValue(false)
-                        Tp(Pos)
-                        wait(5)
-                        local t = tick()
-                        repeat
-                            wait(1)
-                            pcall(BuyItem)
-                        until game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT") or tick() - t > 3
-                        repeat wait()
-                            pcall(function()
-                                for k, v in pairs(getconnections(game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT").Frame.go.MouseButton1Click)) do
-                                    v:Fire()
-                                end
-                            end)
-                        until not game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT")
-                    end
-                else
-                    if CheckInven(mode) then 
-                        game:GetService("ReplicatedStorage").Events.Tools:InvokeServer("equip", mode)
-                    end
-                    AFB.SetValue(false)
-                    lf.SetValue(true)
-                    olf.SetValue(false)
-                end
-            end
-        end
-    end)
-    local DoneSeq="0 1 1 1 0 1 1 1 1 0 "
-    function IsSkillUnlocked(skill)
-        if plr.PlayerGui:FindFirstChild("Keys") then
-            if plr.PlayerGui.Keys:FindFirstChild("Frame") then
-                if plr.PlayerGui.Keys.Frame:FindFirstChild(skill) then
-                    if plr.PlayerGui.Keys.Frame[skill].TextLabel.TextLabel.Text ~= "???" then
-                        return true
-                    end
-                end
-            end
-        end
-        return false
-    end
-    function IsSkillReady(skill)
-        if plr.PlayerGui:FindFirstChild("Keys") then
-            if plr.PlayerGui.Keys:FindFirstChild("Frame") then
-                if plr.PlayerGui.Keys.Frame:FindFirstChild(skill) then
-                    if pcall(function() return plr.PlayerGui.Keys.Frame[skill].TextLabel.Frame.UIGradient.Color end) then 
-                        if tostring(plr.PlayerGui.Keys.Frame[skill].TextLabel.Frame.UIGradient.Color)==DoneSeq then 
-                            return true
-                        end
-                    end
-                end
-            end
-        end
-        return false
-    end
-
-    local Tab2 = Window:CreatePage("Rifle Farm")
-    local Section2 = Tab2:CreateSection("Farm")
 
     local function Farm()
         pcall(function()
@@ -1387,6 +1264,100 @@ end
 end)
 end)
 
+    local Section2 = Tab2:CreateSection("Misc Farm")
+    
+    local AFB= Section2:CreateToggle("Auto Farm Beli (For Begginer Only)", {Toggled=Settings.Chest,Description = "Auto Farm Chest"}, function(state)
+        Settings.Chest = state
+        SetEN("Noclip", "Chest", state)
+        SetEN("NoFallDame","Chest",state)
+    end)
+    
+    spawn(function() 
+        while wait() do 
+            local mode
+            local price
+            local GetItem
+            local BuyItem
+            local Pos
+            if Settings.FarmMode=="Sword" then
+                 mode="Katana" 
+                 price=1000 
+                 GetItem = GetSword 
+                 BuyItem=BuyKatana 
+                 Pos = SwordPos 
+            end
+            if Settings.FarmMode=="Rifle" then
+                mode="Rifle" 
+                price=300 
+                GetItem=GetRifle 
+                BuyItem=function()  
+                    fireclickdetector(game:GetService("Workspace").BuyableItems.Rifle.ShopPart.ClickDetector) 
+                end 
+                Pos = CFrame.new(999.6433715820312, 9.092554092407227, 1133.33740234375) 
+            end
+           
+            if Settings.OneClick and mode then 
+                lf.SetValue(false)
+                if not GetItem() and not CheckInven(mode) then
+                    if data.Stats.Peli.Value < price then 
+                        AFB.SetValue(true)
+                    else
+                        AFB.SetValue(false)
+                        Tp(Pos)
+                        wait(5)
+                        local t = tick()
+                        repeat
+                            wait(1)
+                            pcall(BuyItem)
+                        until game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT") or tick() - t > 3
+                        repeat wait()
+                            pcall(function()
+                                for k, v in pairs(getconnections(game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT").Frame.go.MouseButton1Click)) do
+                                    v:Fire()
+                                end
+                            end)
+                        until not game.Players.LocalPlayer.PlayerGui:FindFirstChild("NPCCHAT")
+                    end
+                else
+                    if CheckInven(mode) then 
+                        game:GetService("ReplicatedStorage").Events.Tools:InvokeServer("equip", mode)
+                    end
+                    AFB.SetValue(false)
+                    lf.SetValue(true)
+                    olf.SetValue(false)
+                end
+            end
+        end
+    end)
+    local DoneSeq="0 1 1 1 0 1 1 1 1 0 "
+    function IsSkillUnlocked(skill)
+        if plr.PlayerGui:FindFirstChild("Keys") then
+            if plr.PlayerGui.Keys:FindFirstChild("Frame") then
+                if plr.PlayerGui.Keys.Frame:FindFirstChild(skill) then
+                    if plr.PlayerGui.Keys.Frame[skill].TextLabel.TextLabel.Text ~= "???" then
+                        return true
+                    end
+                end
+            end
+        end
+        return false
+    end
+    function IsSkillReady(skill)
+        if plr.PlayerGui:FindFirstChild("Keys") then
+            if plr.PlayerGui.Keys:FindFirstChild("Frame") then
+                if plr.PlayerGui.Keys.Frame:FindFirstChild(skill) then
+                    if pcall(function() return plr.PlayerGui.Keys.Frame[skill].TextLabel.Frame.UIGradient.Color end) then 
+                        if tostring(plr.PlayerGui.Keys.Frame[skill].TextLabel.Frame.UIGradient.Color)==DoneSeq then 
+                            return true
+                        end
+                    end
+                end
+            end
+        end
+        return false
+    end
+
+
 local Tab2 = Window:CreatePage("Ship Farm")
 local Section2 = Tab2:CreateSection("Ship Farm")
 Section2:CreateToggle("Ship Farm", {Toggled=Settings.ShipFarm,Description = false}, function(state)
@@ -1436,6 +1407,7 @@ while toggleActive1 do
 end
 end)
 end)
+
 Section2:CreateButton("Set Ship Spawn Location", function(args)
     Settings.ShipPos=game.Players.LocalPlayer.Character.HumanoidRootPart.Position--Vector3.new(6013.2841796875, -3.5988941192626953, -18909.974609375)--
     UniverseHub:AddNoti("Notification", "Set Ship Farm Position Complete", 5)
@@ -2312,7 +2284,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
                         
         Section2:CreateButton("Teleport Farm Place (Fishman Island)", function()
                 pcall(function()
-                getgenv().Speed = 125
                 local finalDestination = CFrame.new(Vector3.new(7878, -2089, -17111))
                 game:GetService("TweenService"):Create(
             game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2324,7 +2295,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
                         
         Section2:CreateButton("Teleport World Scroll", function()
                             pcall(function()
-                            getgenv().Speed = 125
                             local finalDestination = CFrame.new(Vector3.new(-12188, 10, -18545))
                             game:GetService("TweenService"):Create(
                                 game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2336,7 +2306,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Town of Beginnings", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(965.146, 10, 1195.127))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2348,7 +2317,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Marine Fort F-1", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(2904.113, 25, -994.2))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2360,7 +2328,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Sandora", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-1316.089, 15, 1129.95))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2372,7 +2339,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Shell's Town", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-605.248, 15, -4430.41))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2384,7 +2350,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Zou Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-4458.681, 10, -2502.741))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2396,7 +2361,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Restaurant Baratie", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-3909.713, 55, -5569.912))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2408,7 +2372,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Orange Town", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-6999.987, 10, -5345.705))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2420,7 +2383,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Mysterious Cliff", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(2180.005, 415, -8628.285))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2432,7 +2394,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Roca Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(5426.218, 20, -4918.854))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2444,7 +2405,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Colosseum", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-2019.975, 10, -7661.091))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2456,7 +2416,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Sphinx Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-6327.812, 45, -10129.278))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2468,7 +2427,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Kori Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-6684.44, 10, 1828.623))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2480,7 +2438,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Arlong Park", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(652.855, 15, -13122.346))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2492,7 +2449,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Land of the Sky", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(9016.793, 1440, -10542.829))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2504,7 +2460,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Knock-Up Stream Rock", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(8116, 10, -9819))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2516,7 +2471,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Gravito's Fort", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(2611.159, 15, -15359.032))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2528,7 +2482,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Fishman Cave", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(5682.19, 5, -16458.479))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2540,7 +2493,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Marine Base G-1", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-9955.175, 70, -14910.613))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2552,7 +2504,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Coco Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-4262.249, 10, -15531.864))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -2564,417 +2515,12 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Reverse Mountain", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-14338, 20, -9446))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
         TweenInfo.new((finalDestination.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
         {CFrame = finalDestination}
         ):Play()
-    end)
-    end)
-    
-
-    
-    local Section2 = Tab2:CreateSection("Pika-Pika Bypass")
-    
-    Section2:CreateButton("Town of Beginnings (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(965.146, 10, 1195.127))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Marine Fort F-1 (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(2904.113, 25, -994.2))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Sandora (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-1316.089, 15, 1129.95))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Shell's Town (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-605.248, 15, -4430.41))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Zou Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-4458.681, 10, -2502.741))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Restaurant Baratie (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-3909.713, 55, -5569.912))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Orange Town (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-6999.987, 10, -5345.705))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Mysterious Cliff (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(2180.005, 415, -8628.285))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Roca Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(5426.218, 20, -4918.854))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Colosseum (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-2019.975, 10, -7661.091))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Sphinx Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-6327.812, 45, -10129.278))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Kori Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-6684.44, 10, 1828.623))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Arlong Park (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(652.855, 15, -13122.346))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Land of the Sky (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(9016.793, 1440, -10542.829))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Knock-Up Stream Rock (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(8116, 10, -9819))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Gravito's Fort (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(2611.159, 15, -15359.032))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Fishman Cave (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(5682.19, 5, -16458.479))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Marine Base G-1 (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-9955.175, 70, -14910.613))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Coco Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-4262.249, 10, -15531.864))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Reverse Mountain (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-14338, 20, -9446))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
     end)
     end)
     
@@ -3006,7 +2552,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Thriller Bark", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(9338, 15, -7040))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3018,7 +2563,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Colosseum of Arc", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(2219.00098, 4.75781488, 6058.27246))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3030,7 +2574,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Desert Kingdom", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-3673.99585, 19.3691502, 405.525574))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3042,7 +2585,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Rovo Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-6247.56934, 102.015671, 359.281433))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3054,7 +2596,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Dokkan Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(9303.5615234375, 30.17473030090332, -11833.7001953125))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3066,7 +2607,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Foro Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(8271.4404296875, -3.2496461868286133, 4333.2412109375))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3078,7 +2618,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Reverse Mountain", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-9044.43359375, 113.1083984375, 434.6337890625))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3090,7 +2629,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Rose Kingdom", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(8262.8994140625, 230.00009155273438, 10191.80078125))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3102,7 +2640,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Sashi Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-1553.2940673828125, 8.53828239440918, -6160.43896484375))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3114,7 +2651,6 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     
     Section2:CreateButton("Spirit Island", function()
         pcall(function()
-            getgenv().Speed = 125
             local finalDestination = CFrame.new(Vector3.new(-1389.3193359375, -152.4592742919922, 9937.9609375))
             game:GetService("TweenService"):Create(
         game.Players.LocalPlayer.Character.HumanoidRootPart,
@@ -3124,214 +2660,16 @@ Section2:CreateColorPicker("World Color", Color3.fromRGB(255, 255, 255), functio
     end)
     end)
     
-    local Section2 = Tab2:CreateSection("Pika-Pika Bypass")
-    
-    Section2:CreateButton("Teleport Thriller Bark (Pika)", function()
-                        pcall(function()
-                            local args = {
-                                [1] = "Light Flight"
-                            }
-                            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                                        getgenv().Speed = 215
-                                    local finalDestination1 = CFrame.new(Vector3.new(9338, 15, -7040))
-                                    local tween1 = game:GetService("TweenService"):Create(
-                                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                                        {CFrame = finalDestination1}
-                                    )
-                                    tween1:Play()
-                                    tween1.Completed:Wait()
-                            local player = game.Players.LocalPlayer
-            game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-        end)
-    end)
-    
-    Section2:CreateButton("Colosseum of Arc (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(2219.00098, 4.75781488, 6058.27246))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Desert Kingdom (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-3673.99585, 19.3691502, 405.525574))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Rovo Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-6247.56934, 102.015671, 359.281433))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Dokkan Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(9303.5615234375, 30.17473030090332, -11833.7001953125))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Foro Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(8271.4404296875, -3.2496461868286133, 4333.2412109375))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Reverse Mountain (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-9044.43359375, 113.1083984375, 434.6337890625))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Rose Kingdom (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(8262.8994140625, 230.00009155273438, 10191.80078125))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Sashi Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-1553.2940673828125, 8.53828239440918, -6160.43896484375))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
-    
-    Section2:CreateButton("Spirit Island (Pika)", function()
-        pcall(function()
-            local args = {
-                [1] = "Light Flight"
-            }
-            game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(unpack(args))
-                        getgenv().Speed = 215
-                    local finalDestination1 = CFrame.new(Vector3.new(-1389.3193359375, -152.4592742919922, 9937.9609375))
-                    local tween1 = game:GetService("TweenService"):Create(
-                        game.Players.LocalPlayer.Character.HumanoidRootPart,
-                        TweenInfo.new((finalDestination1.p - game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.p).Magnitude / getgenv().Speed, Enum.EasingStyle.Linear),
-                        {CFrame = finalDestination1}
-                    )
-                    tween1:Play()
-                    tween1.Completed:Wait()
-            local player = game.Players.LocalPlayer
-    game:GetService("ReplicatedStorage").PlayerRemotes:FindFirstChild(player.Name .. "|ServerScriptService.Skills.Skills.SkillContainer.Pika-Pika.Light Flight"):FireServer()
-    end)
-    end)
 
     local Tab2 = Window:CreatePage("Settings")
     local Section2 = Tab2:CreateSection("Main")
-    Section2:CreateSlider("Tween Speed", {Min = 50, Max = 100, DefaultValue = Settings.vt}, function(value)
+    Section2:CreateSlider("Tween Speed", {Min = 30, Max = 125, DefaultValue = Settings.vt}, function(value)
         Settings.vt=value
     end)
     
+    Section2:CreateSlider("Tween Speed 2", {Min = 30, Max = 125, DefaultValue = 100}, function(value)
+        getgenv().Speed = value
+    end)
     function IsBusoActivated()
         if not plr.Character then
             return false
