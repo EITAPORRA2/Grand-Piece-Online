@@ -38,6 +38,8 @@ pcall(function()
      local PawPaw = Tabs.Stacks:AddRightGroupbox('Paw-Paw')
      local YukiYuki = Tabs.Stacks:AddLeftGroupbox('Yuki-Yuki')
      local HieHie = Tabs.Stacks:AddRightGroupbox('Hie-Hie')
+     local OpeOpe = Tabs.Stacks:AddLeftGroupbox('Ope-Ope')
+
 
      local MenuGroup = Tabs['Settings']:AddLeftGroupbox('Menu')
     
@@ -383,6 +385,8 @@ pcall(function()
             destruirCoatBubble()
         end
     end})
+
+    
     
     local BypassEnabled1 = false
         
@@ -399,6 +403,18 @@ pcall(function()
         task.wait(1)
     end)
     end
+
+    Miscs:AddButton('Delete Lava', function()
+        pcall(function()
+            if workspace.Islands["Rose Kingdom"].Factory.Lava then
+                workspace.Islands["Rose Kingdom"].Factory.Lava:Destroy()
+                print("O objeto 'Lava' foi removido com sucesso.")
+            else
+                print("O objeto 'Lava' não foi encontrado.")
+            end
+            end)
+    end)
+    
     
     Teleports:AddToggle('Speed Bypass', {
         Text = 'Speed Bypass',
@@ -416,7 +432,7 @@ pcall(function()
         local player = game.Players.LocalPlayer
         player.Character.HumanoidRootPart.CFrame = CFrame.new(5639.86865, -92.762001, -16611.4688)
     end)
-    
+
     local function Farm()
         pcall(function()
         Tool = game.Players.LocalPlayer.Backpack:FindFirstChild("Rifle")
@@ -1112,6 +1128,30 @@ task.wait(.3)
 end
 end)
 end})
+
+local function OpeKill()
+    pcall(function()
+        local ohString1 = "Radio Knife"
+        local ohTable2 = {
+            ["cf"] = CFrame.new()
+        }
+        game:GetService("ReplicatedStorage").Events.Skill:InvokeServer(ohString1, ohTable2)
+    end)
+end
+
+local OpeInstaKill = false
+
+OpeOpe:AddToggle('Ope Insta Kill', {
+    Text = 'Ope Insta Kill',
+    Callback = function(active)
+    pcall(function()
+        OpeInstaKill = active
+    while OpeInstaKill do
+        OpeKill()
+        task.wait()
+    end
+    end)
+    end})
 
     Library:OnUnload(function()
        print('Unloaded!')
