@@ -5,9 +5,9 @@ pcall(function()
     local plr = game.Players.LocalPlayer
     local queue_on_teleport = queue_on_teleport
     if syn then queue_on_teleport = syn.queue_on_teleport end
-    queue_on_teleport([[
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/Grand-Piece-Online/main/GrandPiece.lua"))()
-    ]])
+    --queue_on_teleport([[
+        --loadstring(game:HttpGet("https://raw.githubusercontent.com/EITAPORRA2/Grand-Piece-Online/main/GrandPiece.lua"))()
+    --]])
     function AntiDetect()
         pcall(function()
             game:GetService("StarterPlayer").StarterPlayerScripts.FROSTHUB_DETECTION.Disabled = true
